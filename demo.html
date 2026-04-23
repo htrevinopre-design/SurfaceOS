@@ -254,7 +254,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
     <button class="role-tab" onclick="selRole('op',this)" title="Vista operativa">🔧 Operador</button>
   </div>
   <div class="topbar-right">
-    <div class="gt-badge">GT100 ● 18/18</div>
+    <div class="gt-badge">GT100 ● 27/27</div>
     <div class="clock" id="clock">—</div>
   </div>
 </div>
@@ -450,33 +450,32 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 <div class="page" id="p2">
   <div class="page-header">
     <h1>Gemelo Digital Químico</h1>
-    <p>Vista operativa · Flujo físico del proceso · Zinc fosfato + Polvo Poliéster</p>
+    <p>Vista operativa · 8 etapas · Zinc fosfato + Polvo Poliéster · Línea 1</p>
   </div>
 
   <div class="process-flow mb">
 
-    <!-- Desengrase Alcalino -->
+    <!-- 1. DESENGRASE ALCALINO -->
     <div class="station">
       <div class="s-card ok">
-        <div class="s-name"><span class="s-icon">🧴</span>Desengrase Alcalino</div>
+        <div class="s-name"><span class="s-icon">🧴</span>Desengrase</div>
         <div class="p-range">pH: 9.5–11.5</div>
         <div class="param-row">
           <span class="p-label">pH</span>
           <span class="p-val ok">10.4</span>
         </div>
         <div class="bar-wrap"><div class="bar-fill bar-green" style="width:60%"></div></div>
-        <div class="p-range" style="margin-top:8px">Temp: 55–65°C</div>
         <div class="param-row">
           <span class="p-label">Temperatura</span>
           <span class="p-val ok">60°C</span>
         </div>
-        <div class="param-row" style="margin-top:6px">
+        <div class="param-row">
           <span class="p-label">Concentración</span>
-          <span class="p-val ok" style="font-size:14px">4.2%</span>
+          <span class="p-val ok">4.2%</span>
         </div>
         <div class="param-row">
-          <span class="p-label">Nivel</span>
-          <span class="p-val ok" style="font-size:14px">84%</span>
+          <span class="p-label">Nivel tanque</span>
+          <span class="p-val ok">84%</span>
         </div>
         <div class="lab-val">
           <span>Alcalinidad total<span class="lab-tag">LAB</span></span>
@@ -487,188 +486,221 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
     </div>
     <div class="flow-connector">→</div>
 
-    <!-- Enjuague 1 -->
+    <!-- 2. ENJUAGUE 1 -->
     <div class="station">
       <div class="s-card ok">
         <div class="s-name"><span class="s-icon">💧</span>Enjuague 1</div>
-        <div class="p-range">Conductividad: &lt;1,000 µS/cm</div>
+        <div class="p-range">Cond: &lt;1,000 µS/cm</div>
         <div class="param-row">
           <span class="p-label">Conductividad</span>
           <span class="p-val ok">380 µS/cm</span>
         </div>
         <div class="bar-wrap"><div class="bar-fill bar-green" style="width:38%"></div></div>
-        <div class="param-row" style="margin-top:8px">
+        <div class="param-row">
           <span class="p-label">Temperatura</span>
-          <span class="p-val ok" style="font-size:14px">38°C</span>
+          <span class="p-val ok">38°C</span>
         </div>
         <div class="param-row">
           <span class="p-label">Flujo renovación</span>
-          <span class="p-val ok" style="font-size:14px">8.2 L/min</span>
+          <span class="p-val ok">8.2 L/min</span>
         </div>
-        <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5">Función: eliminar arrastre<br>(drag-out) del desengrase</div>
+        <div class="param-row">
+          <span class="p-label">pH</span>
+          <span class="p-val ok">8.2</span>
+        </div>
         <div class="status-pill"><span class="tag tag-green">● En rango</span></div>
       </div>
     </div>
     <div class="flow-connector">→</div>
 
-    <!-- Activación (Titanio) -->
-    <div class="station">
-      <div class="s-card ok">
-        <div class="s-name"><span class="s-icon">⚡</span>Activación Ti</div>
-        <div class="p-range">pH: 8.5–9.5</div>
-        <div class="param-row">
-          <span class="p-label">pH</span>
-          <span class="p-val ok">9.0</span>
-        </div>
-        <div class="bar-wrap"><div class="bar-fill bar-green" style="width:50%"></div></div>
-        <div class="param-row" style="margin-top:8px">
-          <span class="p-label">Temperatura</span>
-          <span class="p-val ok" style="font-size:14px">25°C</span>
-        </div>
-        <div class="param-row">
-          <span class="p-label">Edad del baño</span>
-          <span class="p-val ok" style="font-size:14px">3 días</span>
-        </div>
-        <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5">Nucleación de cristales<br>de titanio coloidal</div>
-        <div class="status-pill"><span class="tag tag-green">● Activo</span></div>
-      </div>
-    </div>
-    <div class="flow-connector">→</div>
-
-    <!-- Fosfatado (WARN) -->
+    <!-- 3. SELLO 1 — FOSFATADO ZINC -->
     <div class="station">
       <div class="s-card warn">
-        <div class="s-name"><span class="s-icon">⚗️</span>Fosfatado (Zn)</div>
+        <div class="s-name"><span class="s-icon">⚗️</span>Sello 1 · Fosfatado</div>
         <div class="p-range">pH: 4.5–5.5 · Crit: &gt;5.6</div>
         <div class="param-row">
           <span class="p-label">pH</span>
           <span class="p-val warn blink" id="phVal">5.32</span>
         </div>
         <div class="bar-wrap"><div class="bar-fill bar-yellow" id="phBar" style="width:82%"></div></div>
-        <div style="font-size:10px;color:var(--yellow);margin-top:2px">⚠ Tendencia ascendente</div>
-        <div class="p-range" style="margin-top:6px">Conductividad: 1,200–2,000 µS/cm</div>
+        <div style="font-size:10px;color:var(--yellow);margin-top:2px;margin-bottom:4px">⚠ Tendencia ascendente</div>
         <div class="param-row">
           <span class="p-label">Conductividad</span>
-          <span class="p-val ok" style="font-size:14px" id="condVal">1,640 µS/cm</span>
+          <span class="p-val ok" id="condVal">1,640 µS/cm</span>
         </div>
         <div class="param-row">
           <span class="p-label">Temperatura</span>
-          <span class="p-val ok" style="font-size:14px">52°C</span>
+          <span class="p-val ok">52°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Nivel tanque</span>
+          <span class="p-val ok">76%</span>
         </div>
         <div class="lab-val">
           <span>Ácido Libre<span class="lab-tag">LAB</span></span>
-          <span style="color:var(--green);font-size:12px;font-weight:600">0.74 %</span>
+          <span style="color:var(--green);font-size:12px;font-weight:600">0.74%</span>
         </div>
         <div class="lab-val">
           <span>Ácido Total<span class="lab-tag">LAB</span></span>
-          <span style="color:var(--green);font-size:12px;font-weight:600">1.82 %</span>
+          <span style="color:var(--green);font-size:12px;font-weight:600">1.82%</span>
         </div>
         <div class="lab-val">
           <span>Fe disuelto<span class="lab-tag">LAB</span></span>
-          <span style="color:var(--yellow);font-size:12px;font-weight:600">0.31 %</span>
+          <span style="color:var(--yellow);font-size:12px;font-weight:600">0.31%</span>
         </div>
-        <div style="font-size:9px;color:var(--muted);margin-top:4px">Edad del baño: 18 días</div>
+        <div style="font-size:9px;color:var(--muted);margin-top:4px">Baño: 18 días · Zn fosfato</div>
         <div class="status-pill"><span class="tag tag-yellow">⚠ Revisar dosificación</span></div>
       </div>
     </div>
     <div class="flow-connector">→</div>
 
-    <!-- Enjuague 2 -->
+    <!-- 4. ENJUAGUE 2 -->
     <div class="station">
       <div class="s-card ok">
         <div class="s-name"><span class="s-icon">💧</span>Enjuague 2</div>
-        <div class="p-range">Conductividad: &lt;300 µS/cm</div>
+        <div class="p-range">Cond: &lt;300 µS/cm</div>
         <div class="param-row">
           <span class="p-label">Conductividad</span>
           <span class="p-val ok">188 µS/cm</span>
         </div>
         <div class="bar-wrap"><div class="bar-fill bar-green" style="width:63%"></div></div>
-        <div class="param-row" style="margin-top:8px">
-          <span class="p-label">pH</span>
-          <span class="p-val ok" style="font-size:14px">5.8</span>
-        </div>
         <div class="param-row">
           <span class="p-label">Temperatura</span>
-          <span class="p-val ok" style="font-size:14px">40°C</span>
+          <span class="p-val ok">40°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">pH</span>
+          <span class="p-val ok">5.8</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Flujo renovación</span>
+          <span class="p-val ok">6.4 L/min</span>
         </div>
         <div class="status-pill"><span class="tag tag-green">● En rango</span></div>
       </div>
     </div>
     <div class="flow-connector">→</div>
 
-    <!-- Enjuague DI -->
+    <!-- 5. SELLO 2 — PASIVADO ZIRCONIO -->
     <div class="station">
       <div class="s-card ok">
-        <div class="s-name"><span class="s-icon">🔬</span>Enjuague DI</div>
-        <div class="p-range">Conductividad: &lt;30 µS/cm ← CRÍTICO</div>
-        <div class="param-row">
-          <span class="p-label">Conductividad</span>
-          <span class="p-val ok" style="color:#86efac">18 µS/cm</span>
-        </div>
-        <div class="bar-wrap"><div class="bar-fill bar-green" style="width:60%"></div></div>
-        <div class="param-row" style="margin-top:8px">
-          <span class="p-label">Temperatura</span>
-          <span class="p-val ok" style="font-size:14px">35°C</span>
-        </div>
-        <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5">Agua desionizada — previene<br>contaminación iónica residual</div>
-        <div class="status-pill"><span class="tag tag-green">✓ Excelente</span></div>
-      </div>
-    </div>
-    <div class="flow-connector">→</div>
-
-    <!-- Sello Zirconio -->
-    <div class="station">
-      <div class="s-card ok">
-        <div class="s-name"><span class="s-icon">🔒</span>Sello Zirconio</div>
-        <div class="p-range">pH: 3.8–5.0 (libre de cromo)</div>
+        <div class="s-name"><span class="s-icon">🔒</span>Sello 2 · Pasivado</div>
+        <div class="p-range">pH: 3.8–5.0 · Sin Cr(VI)</div>
         <div class="param-row">
           <span class="p-label">pH</span>
           <span class="p-val ok">4.3</span>
         </div>
         <div class="bar-wrap"><div class="bar-fill bar-green" style="width:43%"></div></div>
-        <div class="param-row" style="margin-top:8px">
+        <div class="param-row">
           <span class="p-label">Temperatura</span>
-          <span class="p-val ok" style="font-size:14px">32°C</span>
+          <span class="p-val ok">32°C</span>
         </div>
         <div class="param-row">
           <span class="p-label">Conductividad</span>
-          <span class="p-val ok" style="font-size:14px">920 µS/cm</span>
+          <span class="p-val ok">920 µS/cm</span>
         </div>
-        <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5">Sella porosidad del fosfato.<br>Sin Cr(VI) — REACH compliant</div>
-        <div class="status-pill"><span class="tag tag-green">● En rango</span></div>
+        <div class="param-row">
+          <span class="p-label">Nivel tanque</span>
+          <span class="p-val ok">88%</span>
+        </div>
+        <div class="lab-val">
+          <span>Conc. Zirconio<span class="lab-tag">LAB</span></span>
+          <span style="color:var(--green);font-size:12px;font-weight:600">142 ppm</span>
+        </div>
+        <div class="status-pill"><span class="tag tag-green">● REACH compliant</span></div>
       </div>
     </div>
     <div class="flow-connector">→</div>
 
-    <!-- Horno Curado -->
-    <div class="station" style="min-width:170px">
+    <!-- 6. HORNO DE SECADO -->
+    <div class="station">
+      <div class="s-card ok">
+        <div class="s-name"><span class="s-icon">♨️</span>Secado</div>
+        <div class="p-range">T°: 90–130°C · Elimina humedad</div>
+        <div class="param-row">
+          <span class="p-label">T° Zona 1 entrada</span>
+          <span class="p-val ok">95°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">T° Zona 2 pico</span>
+          <span class="p-val ok">118°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Velocidad cadena</span>
+          <span class="p-val ok">3.4 m/min</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Tiempo en horno</span>
+          <span class="p-val ok">8.2 min</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5">Humedad residual máx:<br>&lt;0.5% antes de cabina</div>
+        <div class="status-pill"><span class="tag tag-green">● Secado correcto</span></div>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+
+    <!-- 7. CABINA DE PINTURA -->
+    <div class="station">
+      <div class="s-card ok">
+        <div class="s-name"><span class="s-icon">🎨</span>Cabina de Pintura</div>
+        <div class="p-range">HR: &lt;60% · Temp: 18–25°C</div>
+        <div class="param-row">
+          <span class="p-label">Humedad relativa</span>
+          <span class="p-val ok">51%</span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill bar-green" style="width:51%"></div></div>
+        <div class="param-row">
+          <span class="p-label">Temperatura cabina</span>
+          <span class="p-val ok">22°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Voltaje pistola</span>
+          <span class="p-val ok">72 kV</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Presión aire</span>
+          <span class="p-val ok">18 PSI</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Espesor objetivo</span>
+          <span class="p-val ok">70 µm</span>
+        </div>
+        <div class="status-pill"><span class="tag tag-green">● Condiciones óptimas</span></div>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+
+    <!-- 8. HORNO DE CURADO -->
+    <div class="station">
       <div class="s-card ok">
         <div class="s-name"><span class="s-icon">🔥</span>Horno de Curado</div>
-        <div style="font-size:9px;color:var(--muted);margin-bottom:6px">Polvo poliéster · Set: PMT 200°C / 12 min</div>
+        <div class="p-range">PMT: 190–210°C · t ≥ 10 min</div>
         <div class="param-row">
-          <span class="p-label">Zona 1 — Precalent.</span>
-          <span class="p-val ok" style="font-size:14px">172°C</span>
-        </div>
-        <div class="param-row">
-          <span class="p-label">Zona 2 — Pico PMT</span>
-          <span class="p-val ok" style="font-size:14px">198°C</span>
+          <span class="p-label">T° Z1 precalentamiento</span>
+          <span class="p-val ok">172°C</span>
         </div>
         <div class="param-row">
-          <span class="p-label">Zona 3 — Salida</span>
-          <span class="p-val ok" style="font-size:14px">88°C</span>
+          <span class="p-label">T° Z2 pico PMT</span>
+          <span class="p-val ok">198°C</span>
         </div>
-        <div class="param-row" style="margin-top:4px">
-          <span class="p-label">Velocidad conveyor</span>
-          <span class="p-val ok" style="font-size:13px">3.4 m/min</span>
+        <div class="param-row">
+          <span class="p-label">T° Z3 salida</span>
+          <span class="p-val ok">88°C</span>
         </div>
-        <!-- Cure profile mini -->
-        <svg viewBox="0 0 140 40" class="cure-chart" style="margin-top:8px">
-          <rect x="55" y="5" width="45" height="22" fill="rgba(34,197,94,.1)"/>
-          <polyline points="0,38 20,36 40,28 55,12 80,8 100,8 120,18 140,35"
-            stroke="#ef4444" stroke-width="1.5" fill="none"/>
-          <line x1="55" y1="5" x2="100" y2="5" stroke="rgba(239,68,68,.3)" stroke-width="1" stroke-dasharray="2,2"/>
-          <line x1="55" y1="27" x2="100" y2="27" stroke="rgba(239,68,68,.3)" stroke-width="1" stroke-dasharray="2,2"/>
-          <text x="60" y="22" fill="#86efac" font-size="7">PMT ✓</text>
+        <div class="param-row">
+          <span class="p-label">Tiempo a PMT</span>
+          <span class="p-val ok">12.4 min</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Velocidad cadena</span>
+          <span class="p-val ok">3.4 m/min</span>
+        </div>
+        <svg viewBox="0 0 140 36" class="cure-chart" style="margin-top:8px">
+          <rect x="52" y="4" width="46" height="20" fill="rgba(34,197,94,.1)"/>
+          <polyline points="0,34 18,32 38,24 52,9 78,5 98,5 118,16 140,32" stroke="#ef4444" stroke-width="1.5" fill="none"/>
+          <line x1="52" y1="4" x2="98" y2="4" stroke="rgba(239,68,68,.3)" stroke-width="1" stroke-dasharray="2,2"/>
+          <line x1="52" y1="24" x2="98" y2="24" stroke="rgba(239,68,68,.3)" stroke-width="1" stroke-dasharray="2,2"/>
+          <text x="57" y="18" fill="#86efac" font-size="7">PMT ✓</text>
         </svg>
         <div class="status-pill"><span class="tag tag-green">✓ Curado en spec</span></div>
       </div>
@@ -683,43 +715,62 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
     </div>
     <table class="lot-table">
       <thead><tr>
-        <th>Hora</th><th>Baño</th><th>pH</th><th>Ác. Libre (%)</th><th>Ác. Total (%)</th><th>Fe disuelto</th><th>Conductividad</th><th>Acción</th>
+        <th>Hora</th><th>Baño</th><th>pH</th><th>Ác. Libre / Conc.</th><th>Ác. Total</th><th>Fe / Parámetro adicional</th><th>Conductividad</th><th>Acción</th>
       </tr></thead>
       <tbody>
-        <tr><td>06:15</td><td>Fosfatado</td><td>4.95</td><td>0.81</td><td>1.74</td><td>0.22%</td><td>1,580 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
-        <tr><td>08:30</td><td>Fosfatado</td><td>5.12</td><td>0.76</td><td>1.79</td><td>0.28%</td><td>1,610 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
-        <tr><td>10:30</td><td>Fosfatado</td><td>5.32</td><td>0.74</td><td>1.82</td><td>0.31%</td><td>1,640 µS/cm</td><td><span class="tag tag-yellow">Ajuste preventivo</span></td></tr>
-        <tr><td>06:15</td><td>Desengrase</td><td>10.6</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
-        <tr><td>10:30</td><td>Enjuague DI</td><td>—</td><td>—</td><td>—</td><td>—</td><td>18 µS/cm</td><td><span class="tag tag-green">Excelente</span></td></tr>
+        <tr><td>06:15</td><td>Desengrase</td><td>10.6</td><td>—</td><td>Alcalinidad: 13.1 p.t.</td><td>—</td><td>—</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
+        <tr><td>10:30</td><td>Desengrase</td><td>10.4</td><td>—</td><td>Alcalinidad: 12.4 p.t.</td><td>—</td><td>—</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
+        <tr><td>06:15</td><td>Sello 1 · Fosfatado</td><td>4.95</td><td>0.81%</td><td>1.74%</td><td>Fe: 0.22%</td><td>1,580 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
+        <tr><td>08:30</td><td>Sello 1 · Fosfatado</td><td>5.12</td><td>0.76%</td><td>1.79%</td><td>Fe: 0.28%</td><td>1,610 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
+        <tr><td>10:30</td><td>Sello 1 · Fosfatado</td><td>5.32</td><td>0.74%</td><td>1.82%</td><td>Fe: 0.31%</td><td>1,640 µS/cm</td><td><span class="tag tag-yellow">Ajuste preventivo</span></td></tr>
+        <tr><td>08:30</td><td>Sello 2 · Pasivado Zr</td><td>4.3</td><td>Zr: 142 ppm</td><td>—</td><td>—</td><td>920 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
+        <tr><td>10:30</td><td>Enjuague 2</td><td>5.8</td><td>—</td><td>—</td><td>—</td><td>188 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
       </tbody>
     </table>
   </div>
 
-  <!-- Sensor status grid -->
+  <!-- Sensor status grid — 27 sensores -->
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <div class="card-title" style="margin:0">Estado de Sensores — 18 Puntos de Medición · GT100</div>
-      <span class="tag tag-green">18/18 Conectados ✓</span>
+      <div class="card-title" style="margin:0">Estado de Sensores — 27 Puntos de Medición · GT100</div>
+      <span class="tag tag-green">27/27 Conectados ✓</span>
     </div>
     <div class="sensor-grid">
+      <!-- Desengrase (4) -->
       <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">10.4</div><div class="sc-label">pH Desengrase</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
       <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">60°C</div><div class="sc-label">T° Desengrase</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
       <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">84%</div><div class="sc-label">Nivel Desengrase</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <!-- Enjuague 1 (3) -->
       <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">380</div><div class="sc-label">Cond. Enj.1 µS/cm</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
       <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">38°C</div><div class="sc-label">T° Enjuague 1</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
-      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">9.0</div><div class="sc-label">pH Activación</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">8.2</div><div class="sc-label">Flujo Enj.1 L/min</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <!-- Sello 1 Fosfatado (4) -->
       <div class="sensor-chip"><div class="sc-val blink" style="color:var(--yellow)" id="sc-ph">5.32</div><div class="sc-label">pH Fosfatado</div><div class="sc-status" style="color:var(--yellow)">⚠ Aviso</div></div>
       <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">1,640</div><div class="sc-label">Cond. Fosfato µS</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
       <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">52°C</div><div class="sc-label">T° Fosfatado</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">76%</div><div class="sc-label">Nivel Fosfatado</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <!-- Enjuague 2 (3) -->
       <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">188</div><div class="sc-label">Cond. Enj.2 µS/cm</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
-      <div class="sensor-chip"><div class="sc-val" style="color:#86efac">18</div><div class="sc-label">Cond. DI µS/cm</div><div class="sc-status" style="color:var(--green)">✓ Excelente</div></div>
-      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">4.3</div><div class="sc-label">pH Sello Zr</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
-      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">32°C</div><div class="sc-label">T° Sello</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
-      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">172°C</div><div class="sc-label">T° Horno Z1</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
-      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">198°C</div><div class="sc-label">T° Horno Z2 PMT</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
-      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">88°C</div><div class="sc-label">T° Horno Z3</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
-      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">3.4</div><div class="sc-label">Vel. Conveyor m/min</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">40°C</div><div class="sc-label">T° Enjuague 2</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">5.8</div><div class="sc-label">pH Enjuague 2</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <!-- Sello 2 Pasivado (3) -->
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">4.3</div><div class="sc-label">pH Pasivado Zr</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">32°C</div><div class="sc-label">T° Pasivado</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">920</div><div class="sc-label">Cond. Pasivado µS</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <!-- Secado (3) -->
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">95°C</div><div class="sc-label">T° Secado Z1</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">118°C</div><div class="sc-label">T° Secado Z2</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">3.4</div><div class="sc-label">Vel. Secado m/min</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <!-- Cabina (4) -->
       <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">51%</div><div class="sc-label">HR Cabina %</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">22°C</div><div class="sc-label">T° Cabina</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">72 kV</div><div class="sc-label">Voltaje pistola</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">18 PSI</div><div class="sc-label">Presión aire</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <!-- Horno curado (4) -->
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">172°C</div><div class="sc-label">T° Curado Z1</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">198°C</div><div class="sc-label">T° Curado Z2 PMT</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">88°C</div><div class="sc-label">T° Curado Z3</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">3.4</div><div class="sc-label">Vel. Curado m/min</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
     </div>
   </div>
 </div>
@@ -999,7 +1050,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
           <div class="ai-av">◈</div>
           <div>
             <div style="font-size:13px;font-weight:600">Process Expert — SurfaceAI</div>
-            <div style="font-size:10px;color:var(--green)">● En línea · GT100 · 18 sensores · Zinc fosfato</div>
+            <div style="font-size:10px;color:var(--green)">● En línea · GT100 · 27 sensores · Zinc fosfato</div>
           </div>
         </div>
         <div class="chat-body" id="chatBody">
