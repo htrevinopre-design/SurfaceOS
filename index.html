@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SurfaceAI — Demo Industrial</title>
+<style>
+:root {
+  --bg: #070b14;
+  --surface: #0f1623;
+  --surface2: #182030;
+  --surface3: #1e2a3a;
+  --border: #263347;
+  --border2: #1a2535;
+  --accent: #3b82f6;
+  --accent2: #6366f1;
+  --green: #22c55e;
+  --yellow: #f59e0b;
+  --red: #ef4444;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --muted2: #94a3b8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;min-height:100vh;font-size:14px}
+
+/* ── Layout ── */
+.shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;height:52px;gap:16px;flex-shrink:0}
+.logo{font-size:17px;font-weight:700;display:flex;align-items:center;gap:7px;letter-spacing:-.3px}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.logo span{color:#93c5fd}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse-dot 2s infinite;flex-shrink:0}
+@keyframes pulse-dot{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}50%{box-shadow:0 0 0 5px rgba(34,197,94,0)}}
+.line-tabs{display:flex;gap:4px;margin-left:4px}
+.line-tab{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted2);font-size:12px;cursor:pointer;transition:all .15s;font-weight:500}
+.line-tab.active{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.4);color:#93c5fd}
+.role-tabs{display:flex;gap:3px;margin-left:auto}
+.role-tab{padding:4px 11px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all .15s;font-weight:500}
+.role-tab.active{background:rgba(99,102,241,.15);border-color:rgba(99,102,241,.35);color:#a5b4fc}
+.topbar-right{display:flex;align-items:center;gap:12px;margin-left:12px}
+.clock{font-size:12px;color:var(--muted2);font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.gt-badge{font-size:11px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac;padding:3px 9px;border-radius:9999px;font-weight:500}
+
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:190px;background:var(--surface);border-right:1px solid var(--border);padding:12px 0;flex-shrink:0}
+.nav-section{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;padding:12px 16px 6px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 16px;font-size:13px;color:var(--muted2);cursor:pointer;border-left:2px solid transparent;transition:all .15s;user-select:none}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.nav-item.active{color:#93c5fd;border-left-color:var(--accent);background:rgba(59,130,246,.07);font-weight:500}
+.nav-icon{font-size:15px;width:18px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--red);color:white;font-size:10px;font-weight:700;padding:1px 6px;border-radius:9999px}
+
+.content{flex:1;overflow-y:auto;padding:22px 24px}
+.page{display:none}
+.page.active{display:block;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Cards ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+.card-sm{padding:14px 16px}
+.card-title{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.mb{margin-bottom:14px}
+.page-header{margin-bottom:20px}
+.page-header h1{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.page-header p{font-size:12px;color:var(--muted2);margin-top:3px}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── Util ── */
+.tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:500}
+.tag-green{background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.2)}
+.tag-yellow{background:rgba(245,158,11,.12);color:#fcd34d;border:1px solid rgba(245,158,11,.2)}
+.tag-red{background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}
+.tag-blue{background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.2)}
+.tag-purple{background:rgba(99,102,241,.12);color:#a5b4fc;border:1px solid rgba(99,102,241,.2)}
+
+.bar-wrap{height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;margin-top:6px}
+.bar-fill{height:100%;border-radius:2px;transition:width .6s}
+.bar-green{background:var(--green)}
+.bar-yellow{background:var(--yellow)}
+.bar-red{background:var(--red)}
+.bar-blue{background:var(--accent)}
+
+.divider{height:1px;background:var(--border2);margin:14px 0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.blink{animation:blink 1.8s infinite}
+@keyframes pulse-border{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.3)}50%{box-shadow:0 0 0 5px rgba(245,158,11,0)}}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.35)}50%{box-shadow:0 0 0 5px rgba(239,68,68,0)}}
+
+/* ══════════════════════════════════
+   PAGE 1 — ESTADO DE PAZ
+══════════════════════════════════ */
+.health-block{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px}
+.health-ring{width:110px;height:110px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+.ring-green{background:radial-gradient(circle,rgba(21,128,61,.9),rgba(14,83,39,.9));box-shadow:0 0 28px rgba(34,197,94,.35),0 0 60px rgba(34,197,94,.15)}
+.ring-yellow{background:radial-gradient(circle,rgba(146,64,14,.9),rgba(120,53,15,.9));box-shadow:0 0 28px rgba(245,158,11,.35),0 0 60px rgba(245,158,11,.15)}
+.ring-red{background:radial-gradient(circle,rgba(153,27,27,.9),rgba(127,29,29,.9));box-shadow:0 0 28px rgba(239,68,68,.35),0 0 60px rgba(239,68,68,.15);animation:pulse-red 2s infinite}
+.ring-label{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.ring-sub{font-size:9px;color:rgba(255,255,255,.65);text-align:center;line-height:1.3;margin-top:2px}
+
+.stat-num{font-size:30px;font-weight:700;letter-spacing:-1px;line-height:1}
+.stat-unit{font-size:12px;color:var(--muted2);margin-left:2px;font-weight:400}
+.stat-delta{font-size:11px;margin-top:5px}
+.delta-up{color:var(--green)}
+.delta-down{color:var(--red)}
+.delta-neutral{color:var(--yellow)}
+
+.gauge-wrap{position:relative;display:flex;align-items:center;justify-content:center}
+.gauge-label{position:absolute;text-align:center}
+.gauge-val{font-size:26px;font-weight:700}
+.gauge-sub{font-size:10px;color:var(--muted2)}
+
+/* ══════════════════════════════════
+   PAGE 2 — GEMELO DIGITAL
+══════════════════════════════════ */
+.process-flow{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding-bottom:4px}
+.flow-connector{display:flex;align-items:center;padding:0 5px;color:var(--muted);font-size:16px;flex-shrink:0;padding-top:0;margin-top:-30px}
+.station{flex:1;min-width:148px}
+.s-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;height:100%;position:relative;overflow:hidden}
+.s-card.ok{}
+.s-card.warn{border-color:rgba(245,158,11,.5);animation:pulse-border 2s infinite}
+.s-card.warn::after{content:'';position:absolute;inset:0;background:rgba(245,158,11,.03);pointer-events:none}
+.s-card.crit{border-color:rgba(239,68,68,.5);animation:pulse-red 1.8s infinite}
+.s-name{font-size:11px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+.s-icon{font-size:14px}
+.param-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4px}
+.p-label{font-size:10px;color:var(--muted);line-height:1}
+.p-val{font-size:17px;font-weight:700;line-height:1}
+.p-val.ok{color:var(--green)}
+.p-val.warn{color:var(--yellow)}
+.p-val.crit{color:var(--red)}
+.p-range{font-size:9px;color:var(--muted);margin-bottom:2px}
+.status-pill{font-size:10px;margin-top:10px;padding:3px 0}
+.lab-val{font-size:11px;color:var(--muted2);background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:3px 8px;margin-top:6px;display:flex;justify-content:space-between;align-items:center}
+.lab-tag{font-size:9px;color:var(--muted);margin-left:4px}
+
+/* Cure profile chart */
+.cure-chart{width:100%;height:80px}
+
+/* Sensor grid */
+.sensor-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:14px}
+.sensor-chip{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px 10px;text-align:center}
+.sc-val{font-size:14px;font-weight:700;margin-bottom:2px}
+.sc-label{font-size:9px;color:var(--muted);line-height:1.3}
+.sc-status{font-size:9px;margin-top:3px}
+
+/* ══════════════════════════════════
+   PAGE 3 — ALERTAS
+══════════════════════════════════ */
+.alerts-layout{display:grid;grid-template-columns:1fr 320px;gap:16px}
+.alert-item{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:14px 16px;display:flex;gap:11px;margin-bottom:10px;position:relative;overflow:hidden}
+.alert-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
+.alert-crit::before{background:var(--red)}
+.alert-warn::before{background:var(--yellow)}
+.alert-ok::before{background:var(--green)}
+.al-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.al-body{flex:1}
+.al-title{font-size:13px;font-weight:600;margin-bottom:3px}
+.al-meta{font-size:11px;color:var(--muted2)}
+.wa-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:5px;padding:4px 9px;font-size:11px;color:#86efac;margin-top:7px}
+.wa-chip-pending{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);color:#fcd34d}
+.mttr-chip{display:inline-block;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);color:#a5b4fc;font-size:10px;font-weight:600;padding:2px 8px;border-radius:9999px;margin-top:5px;margin-left:5px}
+
+.mttr-display{font-size:44px;font-weight:700;color:var(--accent);text-align:center;letter-spacing:-2px;margin:12px 0 2px;font-variant-numeric:tabular-nums}
+.trend-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:11px}
+.trend-bar-wrap{flex:1;height:7px;background:var(--surface3);border-radius:3px;overflow:hidden}
+.trend-bar-fill{height:100%;border-radius:3px;transition:width .5s}
+
+/* ══════════════════════════════════
+   PAGE 4 — AMEF & COMPLIANCE
+══════════════════════════════════ */
+.amef-table{width:100%;border-collapse:collapse;font-size:12px}
+.amef-table th{text-align:left;padding:9px 12px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);font-weight:600}
+.amef-table td{padding:10px 12px;border-bottom:1px solid var(--border2);vertical-align:middle}
+.amef-table tr:last-child td{border-bottom:none}
+.amef-table tr:hover td{background:rgba(255,255,255,.02)}
+.npr{font-weight:700;font-size:13px}
+.npr-hi{color:var(--red)}
+.npr-med{color:var(--yellow)}
+.npr-lo{color:var(--green)}
+
+.lot-table{width:100%;border-collapse:collapse;font-size:12px}
+.lot-table th{text-align:left;padding:9px 12px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);font-weight:600}
+.lot-table td{padding:9px 12px;border-bottom:1px solid var(--border2)}
+.lot-table tr:hover td{background:rgba(255,255,255,.02)}
+.lot-table tr.risk-row td{background:rgba(239,68,68,.04)}
+
+.std-badge{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;margin:4px}
+.std-check{color:var(--green)}
+
+.audit-btn{display:inline-flex;align-items:center;gap:8px;background:#1d4ed8;color:white;border:none;padding:10px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
+.audit-btn:hover{background:#1e40af}
+
+/* ══════════════════════════════════
+   PAGE 5 — IA ADVISOR
+══════════════════════════════════ */
+.ai-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chat-window{display:flex;flex-direction:column;height:460px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.chat-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:rgba(15,22,35,.5)}
+.ai-av{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.chat-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.msg-user{align-self:flex-end;background:#1d4ed8;border-radius:10px 10px 2px 10px;padding:9px 13px;font-size:12px;max-width:82%;line-height:1.5}
+.msg-ai{align-self:flex-start;background:var(--surface2);border:1px solid var(--border);border-radius:10px 10px 10px 2px;padding:9px 13px;font-size:12px;max-width:90%;line-height:1.6}
+.msg-ai strong{color:#93c5fd}
+.msg-ai .highlight{background:rgba(239,68,68,.1);color:#fca5a5;padding:1px 5px;border-radius:3px;font-weight:600}
+.chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--border)}
+.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-size:12px;outline:none;font-family:inherit}
+.chat-input:focus{border-color:var(--accent)}
+.send-btn{background:var(--accent);border:none;border-radius:7px;padding:8px 14px;color:white;cursor:pointer;font-size:12px;font-weight:600}
+
+.quick-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted2);padding:6px 11px;border-radius:6px;font-size:11px;cursor:pointer;transition:all .15s;font-family:inherit}
+.quick-btn:hover{border-color:var(--accent);color:var(--text)}
+
+.defect-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.defect-img{height:80px;display:flex;align-items:center;justify-content:center;font-size:36px;background:var(--surface3)}
+.defect-body{padding:10px}
+.defect-name{font-size:12px;font-weight:600;margin-bottom:3px}
+.defect-cause{font-size:10px;color:var(--muted2);line-height:1.4}
+.conf-row{display:flex;align-items:center;gap:6px;margin-top:6px}
+.conf-bar-w{flex:1;height:3px;background:var(--surface3);border-radius:2px;overflow:hidden}
+.conf-bar-f{height:100%;border-radius:2px}
+.conf-num{font-size:10px;color:var(--muted);width:28px;text-align:right}
+
+.predict-item{display:flex;align-items:flex-start;gap:10px;padding:11px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.pred-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.pred-title{font-size:12px;font-weight:600;margin-bottom:2px}
+.pred-desc{font-size:11px;color:var(--muted2);line-height:1.5}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ═══ TOP BAR ═══ -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">◈</div>
+    <span>Surface</span>AI
+  </div>
+  <div class="live-dot"></div>
+  <div class="line-tabs">
+    <button class="line-tab active" onclick="selLine(1,this)">L1 — Polvo Electrostático</button>
+    <button class="line-tab" onclick="selLine(2,this)">L2 — E-Coat</button>
+  </div>
+  <div class="role-tabs">
+    <button class="role-tab active" onclick="selRole('jefe',this)" title="Vista gerencial">👔 Jefe de Planta</button>
+    <button class="role-tab" onclick="selRole('ing',this)" title="Vista técnica">🔬 Ing. de Proceso</button>
+    <button class="role-tab" onclick="selRole('op',this)" title="Vista operativa">🔧 Operador</button>
+  </div>
+  <div class="topbar-right">
+    <div class="gt-badge">GT100 ● 18/18</div>
+    <div class="clock" id="clock">—</div>
+  </div>
+</div>
+
+<div class="main">
+<!-- ═══ SIDEBAR ═══ -->
+<div class="sidebar">
+  <div class="nav-section">Monitor</div>
+  <div class="nav-item active" onclick="showPage('p1',this)"><span class="nav-icon">🟢</span>Estado de Paz</div>
+  <div class="nav-item" onclick="showPage('p2',this)"><span class="nav-icon">⚙️</span>Gemelo Digital</div>
+  <div class="nav-section">Operación</div>
+  <div class="nav-item" onclick="showPage('p3',this)"><span class="nav-icon">🔔</span>Centro de Alertas<span class="nav-badge" id="alertBadge">2</span></div>
+  <div class="nav-item" onclick="showPage('p4',this)"><span class="nav-icon">📋</span>AMEF & Compliance</div>
+  <div class="nav-section">Inteligencia</div>
+  <div class="nav-item" onclick="showPage('p5',this)"><span class="nav-icon">🤖</span>IA Advisor</div>
+</div>
+
+<!-- ═══ CONTENT ═══ -->
+<div class="content">
+
+<!-- ──────────────────────────────────────────
+  PAGE 1 — ESTADO DE PAZ
+────────────────────────────────────────── -->
+<div class="page active" id="p1">
+  <div class="page-header">
+    <h1>Estado de Paz</h1>
+    <p id="roleDesc">Vista gerencial · Línea 1 — Pintura en Polvo Electrostático · Turno Matutino 06:00–14:00</p>
+  </div>
+
+  <!-- Row 1: Health + KPIs principales -->
+  <div style="display:grid;grid-template-columns:200px 1fr 1fr 1fr;gap:14px" class="mb">
+
+    <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
+      <div class="card-title" style="margin-bottom:8px">Salud del Proceso</div>
+      <div class="health-ring ring-yellow" id="healthRing">
+        <div class="ring-label" id="healthLabel">AVISO</div>
+        <div class="ring-sub" id="healthSub">1 parámetro<br>en límite</div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:8px">Actualizado hace <span id="lastUpdate">8</span>s</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">OEE — Eficiencia Global</div>
+      <div class="stat-num" id="oeeVal">84<span class="stat-unit">%</span></div>
+      <div class="delta-neutral" style="font-size:11px;margin-top:4px">▲ Meta: 85% · Δ -1%</div>
+      <div class="divider"></div>
+      <div style="display:flex;gap:10px;font-size:11px">
+        <div><div style="color:var(--muted);font-size:10px">Disponib.</div><div style="font-weight:600;color:var(--green)">94%</div></div>
+        <div><div style="color:var(--muted);font-size:10px">Rendim.</div><div style="font-weight:600;color:var(--yellow)">91%</div></div>
+        <div><div style="color:var(--muted);font-size:10px">Calidad</div><div style="font-weight:600;color:var(--yellow)">98%</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">FPY — First Pass Yield</div>
+      <div class="stat-num" id="fpyVal">97.8<span class="stat-unit">%</span></div>
+      <div class="delta-up" style="font-size:11px;margin-top:4px">▲ +0.4% vs. semana pasada</div>
+      <div class="divider"></div>
+      <div style="font-size:11px;color:var(--muted2)">
+        1,221 aprobadas / 1,248 producidas<br>
+        <span style="color:var(--red)">27 rechazadas</span> · 3 en revisión
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Costo de Scrap — Turno</div>
+      <div class="stat-num" style="color:var(--red)" id="scrapCost">$5,940</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:3px">MXN · Turno Matutino</div>
+      <div class="delta-down" style="font-size:11px;margin-top:4px">▲ +$1,240 vs. meta turno</div>
+      <div class="divider"></div>
+      <div style="font-size:11px;color:var(--muted2)">~$220/pieza rechazada (incl. retrabajo)</div>
+    </div>
+  </div>
+
+  <!-- Row 2: Métricas operativas -->
+  <div class="grid-4 mb">
+    <div class="card card-sm">
+      <div class="card-title">Velocidad de Línea</div>
+      <div class="stat-num" id="lineSpeed">3.4<span class="stat-unit">m/min</span></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:5px">Rango: 2.8 – 4.0 m/min</div>
+      <div class="bar-wrap"><div class="bar-fill bar-green" style="width:65%" id="speedBar"></div></div>
+    </div>
+    <div class="card card-sm">
+      <div class="card-title">Tiempo de Inmersión</div>
+      <div class="stat-num" id="immersion">5<span class="stat-unit">min 12s</span></div>
+      <div style="font-size:10px;color:var(--green);margin-top:5px">✓ Estándar: 5:00–6:00 min</div>
+    </div>
+    <div class="card card-sm">
+      <div class="card-title">Piezas Producidas</div>
+      <div class="stat-num" id="partsProd">1,248</div>
+      <div style="font-size:10px;color:var(--muted);margin-top:5px">Meta turno: 1,400 (89%)</div>
+      <div class="bar-wrap"><div class="bar-fill bar-blue" style="width:89%"></div></div>
+    </div>
+    <div class="card card-sm">
+      <div class="card-title">MTTR Promedio</div>
+      <div class="stat-num" style="color:var(--accent)" id="mttrAvg">3<span class="stat-unit">min 58s</span></div>
+      <div style="font-size:10px;color:var(--green);margin-top:5px">✓ Bajo meta (&lt;8 min)</div>
+    </div>
+  </div>
+
+  <!-- Row 3: Gráficas tendencia -->
+  <div class="grid-2 mb">
+    <div class="card">
+      <div class="card-title">pH Fosfatado — Tendencia 2 horas</div>
+      <svg viewBox="0 0 380 80" style="width:100%;height:80px">
+        <defs>
+          <linearGradient id="phg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3b82f6" stop-opacity=".25"/>
+            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- Target zone 4.5-5.5 mapped to y:20-60 (60px range = 2pH units, so 1pH=30px; 4.5=y50, 5.5=y20) -->
+        <rect x="0" y="18" width="380" height="34" fill="rgba(34,197,94,.07)" rx="2"/>
+        <line x1="0" y1="18" x2="380" y2="18" stroke="rgba(34,197,94,.3)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="0" y1="52" x2="380" y2="52" stroke="rgba(34,197,94,.3)" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="3" y="14" fill="#64748b" font-size="9">pH 5.5 — límite sup.</text>
+        <text x="3" y="64" fill="#64748b" font-size="9">pH 4.5 — límite inf.</text>
+        <!-- Trend line (pH 4.8–5.1 normal, recent drift to 5.3) -->
+        <polyline points="0,42 35,38 70,40 105,36 140,38 175,35 210,32 245,30 280,28 315,24 380,16"
+          fill="url(#phg)" stroke="#3b82f6" stroke-width="2" fill-opacity="1"/>
+        <circle cx="380" cy="16" r="4" fill="#f59e0b"/>
+        <text x="350" y="12" fill="#f59e0b" font-size="9">5.3 ⚠</text>
+      </svg>
+      <div style="font-size:11px;color:var(--yellow);margin-top:6px">⚠ pH ascendente — 5.32 / Límite: 5.50 · Acción preventiva sugerida</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Temperatura Metal (PMT) — Zona Pico Horno</div>
+      <svg viewBox="0 0 380 80" style="width:100%;height:80px">
+        <defs>
+          <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ef4444" stop-opacity=".2"/>
+            <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <rect x="100" y="20" width="180" height="25" fill="rgba(34,197,94,.07)"/>
+        <text x="2" y="10" fill="#64748b" font-size="9">210°C — límite sup.</text>
+        <text x="2" y="73" fill="#64748b" font-size="9">190°C — límite inf.</text>
+        <!-- Cure S-curve: ramp up, hold at peak, drop -->
+        <polyline points="0,75 50,72 100,60 160,32 210,24 250,24 290,28 320,38 360,60 380,72"
+          fill="url(#tg)" stroke="#ef4444" stroke-width="2"/>
+        <line x1="0" y1="20" x2="380" y2="20" stroke="rgba(239,68,68,.25)" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="0" y1="45" x2="380" y2="45" stroke="rgba(239,68,68,.25)" stroke-width="1" stroke-dasharray="3,3"/>
+        <text x="150" y="18" fill="#86efac" font-size="9">PMT: 198°C ✓</text>
+        <text x="3" y="88" fill="#64748b" font-size="8.5">Entrada</text>
+        <text x="170" y="88" fill="#64748b" font-size="8.5">Pico</text>
+        <text x="345" y="88" fill="#64748b" font-size="8.5">Salida</text>
+      </svg>
+      <div style="font-size:11px;color:var(--green);margin-top:6px">✓ Perfil de curado dentro de spec · PMT 198°C / 12 min · Polvo Poliéster std.</div>
+    </div>
+  </div>
+
+  <!-- Row 4: Consumo químico turno -->
+  <div class="card">
+    <div class="card-title">Consumo Químico — Turno Actual vs. Estándar</div>
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:4px">
+      <div style="text-align:center">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Desengrasante</div>
+        <div style="font-size:16px;font-weight:700;color:var(--green)">4.1 L</div>
+        <div style="font-size:9px;color:var(--muted)">Std: 3.8–4.5 L</div>
+        <div class="bar-wrap" style="margin-top:6px"><div class="bar-fill bar-green" style="width:60%"></div></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Fosfato (reposición)</div>
+        <div style="font-size:16px;font-weight:700;color:var(--yellow)">2.8 L</div>
+        <div style="font-size:9px;color:var(--muted)">Std: 1.8–2.5 L ↑</div>
+        <div class="bar-wrap" style="margin-top:6px"><div class="bar-fill bar-yellow" style="width:80%"></div></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Sello (Zirconio)</div>
+        <div style="font-size:16px;font-weight:700;color:var(--green)">0.6 L</div>
+        <div style="font-size:9px;color:var(--muted)">Std: 0.5–0.8 L</div>
+        <div class="bar-wrap" style="margin-top:6px"><div class="bar-fill bar-green" style="width:45%"></div></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Polvo electrost.</div>
+        <div style="font-size:16px;font-weight:700;color:var(--green)">18.4 kg</div>
+        <div style="font-size:9px;color:var(--muted)">~58 g/m² ✓</div>
+        <div class="bar-wrap" style="margin-top:6px"><div class="bar-fill bar-green" style="width:55%"></div></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Agua DI (enjuague)</div>
+        <div style="font-size:16px;font-weight:700;color:var(--green)">340 L</div>
+        <div style="font-size:9px;color:var(--muted)">Std: 300–400 L</div>
+        <div class="bar-wrap" style="margin-top:6px"><div class="bar-fill bar-green" style="width:68%"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  PAGE 2 — GEMELO DIGITAL
+────────────────────────────────────────── -->
+<div class="page" id="p2">
+  <div class="page-header">
+    <h1>Gemelo Digital Químico</h1>
+    <p>Vista operativa · Flujo físico del proceso · Zinc fosfato + Polvo Poliéster</p>
+  </div>
+
+  <div class="process-flow mb">
+
+    <!-- Desengrase Alcalino -->
+    <div class="station">
+      <div class="s-card ok">
+        <div class="s-name"><span class="s-icon">🧴</span>Desengrase Alcalino</div>
+        <div class="p-range">pH: 9.5–11.5</div>
+        <div class="param-row">
+          <span class="p-label">pH</span>
+          <span class="p-val ok">10.4</span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill bar-green" style="width:60%"></div></div>
+        <div class="p-range" style="margin-top:8px">Temp: 55–65°C</div>
+        <div class="param-row">
+          <span class="p-label">Temperatura</span>
+          <span class="p-val ok">60°C</span>
+        </div>
+        <div class="param-row" style="margin-top:6px">
+          <span class="p-label">Concentración</span>
+          <span class="p-val ok" style="font-size:14px">4.2%</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Nivel</span>
+          <span class="p-val ok" style="font-size:14px">84%</span>
+        </div>
+        <div class="lab-val">
+          <span>Alcalinidad total<span class="lab-tag">LAB</span></span>
+          <span style="color:var(--green);font-size:12px;font-weight:600">12.4 p.t.</span>
+        </div>
+        <div class="status-pill"><span class="tag tag-green">● En rango</span></div>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+
+    <!-- Enjuague 1 -->
+    <div class="station">
+      <div class="s-card ok">
+        <div class="s-name"><span class="s-icon">💧</span>Enjuague 1</div>
+        <div class="p-range">Conductividad: &lt;1,000 µS/cm</div>
+        <div class="param-row">
+          <span class="p-label">Conductividad</span>
+          <span class="p-val ok">380 µS/cm</span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill bar-green" style="width:38%"></div></div>
+        <div class="param-row" style="margin-top:8px">
+          <span class="p-label">Temperatura</span>
+          <span class="p-val ok" style="font-size:14px">38°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Flujo renovación</span>
+          <span class="p-val ok" style="font-size:14px">8.2 L/min</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5">Función: eliminar arrastre<br>(drag-out) del desengrase</div>
+        <div class="status-pill"><span class="tag tag-green">● En rango</span></div>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+
+    <!-- Activación (Titanio) -->
+    <div class="station">
+      <div class="s-card ok">
+        <div class="s-name"><span class="s-icon">⚡</span>Activación Ti</div>
+        <div class="p-range">pH: 8.5–9.5</div>
+        <div class="param-row">
+          <span class="p-label">pH</span>
+          <span class="p-val ok">9.0</span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill bar-green" style="width:50%"></div></div>
+        <div class="param-row" style="margin-top:8px">
+          <span class="p-label">Temperatura</span>
+          <span class="p-val ok" style="font-size:14px">25°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Edad del baño</span>
+          <span class="p-val ok" style="font-size:14px">3 días</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5">Nucleación de cristales<br>de titanio coloidal</div>
+        <div class="status-pill"><span class="tag tag-green">● Activo</span></div>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+
+    <!-- Fosfatado (WARN) -->
+    <div class="station">
+      <div class="s-card warn">
+        <div class="s-name"><span class="s-icon">⚗️</span>Fosfatado (Zn)</div>
+        <div class="p-range">pH: 4.5–5.5 · Crit: &gt;5.6</div>
+        <div class="param-row">
+          <span class="p-label">pH</span>
+          <span class="p-val warn blink" id="phVal">5.32</span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill bar-yellow" id="phBar" style="width:82%"></div></div>
+        <div style="font-size:10px;color:var(--yellow);margin-top:2px">⚠ Tendencia ascendente</div>
+        <div class="p-range" style="margin-top:6px">Conductividad: 1,200–2,000 µS/cm</div>
+        <div class="param-row">
+          <span class="p-label">Conductividad</span>
+          <span class="p-val ok" style="font-size:14px" id="condVal">1,640 µS/cm</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Temperatura</span>
+          <span class="p-val ok" style="font-size:14px">52°C</span>
+        </div>
+        <div class="lab-val">
+          <span>Ácido Libre<span class="lab-tag">LAB</span></span>
+          <span style="color:var(--green);font-size:12px;font-weight:600">0.74 %</span>
+        </div>
+        <div class="lab-val">
+          <span>Ácido Total<span class="lab-tag">LAB</span></span>
+          <span style="color:var(--green);font-size:12px;font-weight:600">1.82 %</span>
+        </div>
+        <div class="lab-val">
+          <span>Fe disuelto<span class="lab-tag">LAB</span></span>
+          <span style="color:var(--yellow);font-size:12px;font-weight:600">0.31 %</span>
+        </div>
+        <div style="font-size:9px;color:var(--muted);margin-top:4px">Edad del baño: 18 días</div>
+        <div class="status-pill"><span class="tag tag-yellow">⚠ Revisar dosificación</span></div>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+
+    <!-- Enjuague 2 -->
+    <div class="station">
+      <div class="s-card ok">
+        <div class="s-name"><span class="s-icon">💧</span>Enjuague 2</div>
+        <div class="p-range">Conductividad: &lt;300 µS/cm</div>
+        <div class="param-row">
+          <span class="p-label">Conductividad</span>
+          <span class="p-val ok">188 µS/cm</span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill bar-green" style="width:63%"></div></div>
+        <div class="param-row" style="margin-top:8px">
+          <span class="p-label">pH</span>
+          <span class="p-val ok" style="font-size:14px">5.8</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Temperatura</span>
+          <span class="p-val ok" style="font-size:14px">40°C</span>
+        </div>
+        <div class="status-pill"><span class="tag tag-green">● En rango</span></div>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+
+    <!-- Enjuague DI -->
+    <div class="station">
+      <div class="s-card ok">
+        <div class="s-name"><span class="s-icon">🔬</span>Enjuague DI</div>
+        <div class="p-range">Conductividad: &lt;30 µS/cm ← CRÍTICO</div>
+        <div class="param-row">
+          <span class="p-label">Conductividad</span>
+          <span class="p-val ok" style="color:#86efac">18 µS/cm</span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill bar-green" style="width:60%"></div></div>
+        <div class="param-row" style="margin-top:8px">
+          <span class="p-label">Temperatura</span>
+          <span class="p-val ok" style="font-size:14px">35°C</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5">Agua desionizada — previene<br>contaminación iónica residual</div>
+        <div class="status-pill"><span class="tag tag-green">✓ Excelente</span></div>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+
+    <!-- Sello Zirconio -->
+    <div class="station">
+      <div class="s-card ok">
+        <div class="s-name"><span class="s-icon">🔒</span>Sello Zirconio</div>
+        <div class="p-range">pH: 3.8–5.0 (libre de cromo)</div>
+        <div class="param-row">
+          <span class="p-label">pH</span>
+          <span class="p-val ok">4.3</span>
+        </div>
+        <div class="bar-wrap"><div class="bar-fill bar-green" style="width:43%"></div></div>
+        <div class="param-row" style="margin-top:8px">
+          <span class="p-label">Temperatura</span>
+          <span class="p-val ok" style="font-size:14px">32°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Conductividad</span>
+          <span class="p-val ok" style="font-size:14px">920 µS/cm</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.5">Sella porosidad del fosfato.<br>Sin Cr(VI) — REACH compliant</div>
+        <div class="status-pill"><span class="tag tag-green">● En rango</span></div>
+      </div>
+    </div>
+    <div class="flow-connector">→</div>
+
+    <!-- Horno Curado -->
+    <div class="station" style="min-width:170px">
+      <div class="s-card ok">
+        <div class="s-name"><span class="s-icon">🔥</span>Horno de Curado</div>
+        <div style="font-size:9px;color:var(--muted);margin-bottom:6px">Polvo poliéster · Set: PMT 200°C / 12 min</div>
+        <div class="param-row">
+          <span class="p-label">Zona 1 — Precalent.</span>
+          <span class="p-val ok" style="font-size:14px">172°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Zona 2 — Pico PMT</span>
+          <span class="p-val ok" style="font-size:14px">198°C</span>
+        </div>
+        <div class="param-row">
+          <span class="p-label">Zona 3 — Salida</span>
+          <span class="p-val ok" style="font-size:14px">88°C</span>
+        </div>
+        <div class="param-row" style="margin-top:4px">
+          <span class="p-label">Velocidad conveyor</span>
+          <span class="p-val ok" style="font-size:13px">3.4 m/min</span>
+        </div>
+        <!-- Cure profile mini -->
+        <svg viewBox="0 0 140 40" class="cure-chart" style="margin-top:8px">
+          <rect x="55" y="5" width="45" height="22" fill="rgba(34,197,94,.1)"/>
+          <polyline points="0,38 20,36 40,28 55,12 80,8 100,8 120,18 140,35"
+            stroke="#ef4444" stroke-width="1.5" fill="none"/>
+          <line x1="55" y1="5" x2="100" y2="5" stroke="rgba(239,68,68,.3)" stroke-width="1" stroke-dasharray="2,2"/>
+          <line x1="55" y1="27" x2="100" y2="27" stroke="rgba(239,68,68,.3)" stroke-width="1" stroke-dasharray="2,2"/>
+          <text x="60" y="22" fill="#86efac" font-size="7">PMT ✓</text>
+        </svg>
+        <div class="status-pill"><span class="tag tag-green">✓ Curado en spec</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Titración del turno -->
+  <div class="card mb">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="card-title" style="margin:0">Registro de Titulaciones — Turno Matutino</div>
+      <span class="tag tag-blue">Último análisis: 10:30 AM · Op. Torres</span>
+    </div>
+    <table class="lot-table">
+      <thead><tr>
+        <th>Hora</th><th>Baño</th><th>pH</th><th>Ác. Libre (%)</th><th>Ác. Total (%)</th><th>Fe disuelto</th><th>Conductividad</th><th>Acción</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>06:15</td><td>Fosfatado</td><td>4.95</td><td>0.81</td><td>1.74</td><td>0.22%</td><td>1,580 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
+        <tr><td>08:30</td><td>Fosfatado</td><td>5.12</td><td>0.76</td><td>1.79</td><td>0.28%</td><td>1,610 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
+        <tr><td>10:30</td><td>Fosfatado</td><td>5.32</td><td>0.74</td><td>1.82</td><td>0.31%</td><td>1,640 µS/cm</td><td><span class="tag tag-yellow">Ajuste preventivo</span></td></tr>
+        <tr><td>06:15</td><td>Desengrase</td><td>10.6</td><td>—</td><td>—</td><td>—</td><td>—</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
+        <tr><td>10:30</td><td>Enjuague DI</td><td>—</td><td>—</td><td>—</td><td>—</td><td>18 µS/cm</td><td><span class="tag tag-green">Excelente</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Sensor status grid -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="card-title" style="margin:0">Estado de Sensores — 18 Puntos de Medición · GT100</div>
+      <span class="tag tag-green">18/18 Conectados ✓</span>
+    </div>
+    <div class="sensor-grid">
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">10.4</div><div class="sc-label">pH Desengrase</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">60°C</div><div class="sc-label">T° Desengrase</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">84%</div><div class="sc-label">Nivel Desengrase</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">380</div><div class="sc-label">Cond. Enj.1 µS/cm</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">38°C</div><div class="sc-label">T° Enjuague 1</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">9.0</div><div class="sc-label">pH Activación</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val blink" style="color:var(--yellow)" id="sc-ph">5.32</div><div class="sc-label">pH Fosfatado</div><div class="sc-status" style="color:var(--yellow)">⚠ Aviso</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">1,640</div><div class="sc-label">Cond. Fosfato µS</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">52°C</div><div class="sc-label">T° Fosfatado</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">188</div><div class="sc-label">Cond. Enj.2 µS/cm</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:#86efac">18</div><div class="sc-label">Cond. DI µS/cm</div><div class="sc-status" style="color:var(--green)">✓ Excelente</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">4.3</div><div class="sc-label">pH Sello Zr</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">32°C</div><div class="sc-label">T° Sello</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">172°C</div><div class="sc-label">T° Horno Z1</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">198°C</div><div class="sc-label">T° Horno Z2 PMT</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">88°C</div><div class="sc-label">T° Horno Z3</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">3.4</div><div class="sc-label">Vel. Conveyor m/min</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+      <div class="sensor-chip"><div class="sc-val" style="color:var(--green)">51%</div><div class="sc-label">HR Cabina %</div><div class="sc-status" style="color:var(--green)">✓ Ok</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  PAGE 3 — CENTRO DE ALERTAS
+────────────────────────────────────────── -->
+<div class="page" id="p3">
+  <div class="page-header">
+    <h1>Centro de Respuesta</h1>
+    <p>Gestión de alertas con accountability de operadores · Integración WhatsApp Bot</p>
+  </div>
+  <div class="alerts-layout">
+    <div>
+      <div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px">Timeline · Turno Matutino</div>
+
+      <div class="alert-item alert-warn">
+        <div class="al-dot" style="background:var(--yellow)"></div>
+        <div class="al-body">
+          <div class="al-title">⚠ pH Fosfatado en tendencia ascendente — 5.32 / Límite: 5.50</div>
+          <div class="al-meta">Línea 1 · Tanque Fosfatado · Hoy 10:52 AM · Activa</div>
+          <div class="al-meta" style="margin-top:2px">Vel. ascenso: +0.08 pH/hora · Proyección fuera de rango: ~1.8 h</div>
+          <div class="wa-chip wa-chip-pending">⏳ Pendiente de confirmación — Ing. Martínez</div>
+          <div class="mttr-chip">⏱ Cronómetro activo: 12:44</div>
+        </div>
+      </div>
+
+      <div class="alert-item alert-warn">
+        <div class="al-dot" style="background:var(--yellow)"></div>
+        <div class="al-body">
+          <div class="al-title">⚠ Fe disuelto en fosfatado — 0.31% (límite: 0.40%)</div>
+          <div class="al-meta">Línea 1 · Fosfatado · Hoy 10:30 AM · Activa</div>
+          <div class="al-meta" style="margin-top:2px">Tendencia: +0.04%/día · Indicador de agotamiento del baño (18 días en servicio)</div>
+          <div class="wa-chip">✅ Notificado: Ing. Martínez (10:38 AM) — "Programando análisis completo turno tarde"</div>
+          <div class="mttr-chip">⏱ MTTR: 8 min 12s</div>
+        </div>
+      </div>
+
+      <div class="alert-item alert-ok">
+        <div class="al-dot" style="background:var(--green)"></div>
+        <div class="al-body">
+          <div class="al-title">✅ Conductividad Enjuague DI normalizada — 18 µS/cm</div>
+          <div class="al-meta">Línea 1 · Enjuague DI · Hoy 09:15 AM · Resuelta</div>
+          <div class="al-meta" style="margin-top:2px">Estuvo en 44 µS/cm (límite: 30) · Causa: saturación de resina DI</div>
+          <div class="wa-chip">✅ Op. Torres (09:19 AM) — "Regeneré columna DI, bajó a 18 µS/cm"</div>
+          <div class="mttr-chip">✓ MTTR: 4 min 02s</div>
+        </div>
+      </div>
+
+      <div class="alert-item alert-ok">
+        <div class="al-dot" style="background:var(--green)"></div>
+        <div class="al-body">
+          <div class="al-title">✅ PMT Zona 2 horno restituida — 198°C / Set: 200°C ±10°C</div>
+          <div class="al-meta">Línea 1 · Horno Zona 2 · Hoy 08:05 AM · Resuelta</div>
+          <div class="al-meta" style="margin-top:2px">Bajó a 187°C por apertura de puerta (subcurado potencial · 3 piezas en revisión)</div>
+          <div class="wa-chip">✅ Ing. Martínez (08:09 AM) — "Revisé resistencia Z2, estabilizada"</div>
+          <div class="mttr-chip">✓ MTTR: 3 min 41s</div>
+        </div>
+      </div>
+
+      <div class="alert-item alert-ok">
+        <div class="al-dot" style="background:var(--green)"></div>
+        <div class="al-body">
+          <div class="al-title">✅ Nivel desengrase repuesto — 74% → 88%</div>
+          <div class="al-meta">Línea 1 · Tanque Desengrase · Hoy 07:10 AM · Resuelta</div>
+          <div class="wa-chip">✅ Op. Ramírez (07:13 AM) — "Reposición realizada"</div>
+          <div class="mttr-chip">✓ MTTR: 2 min 58s</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel derecho: MTTR + WhatsApp -->
+    <div>
+      <div class="card mb">
+        <div class="card-title" style="text-align:center">MTTR Promedio · Turno</div>
+        <div class="mttr-display">3:58</div>
+        <div style="text-align:center;font-size:11px;color:var(--muted2)">min:seg · Meta: &lt; 8:00 min</div>
+        <div style="text-align:center;margin-top:8px"><span class="tag tag-green">50% bajo meta ✓</span></div>
+        <div class="divider"></div>
+        <div class="card-title">Evolución Semanal (MTTR)</div>
+        <div class="trend-bar-row"><span style="width:36px;text-align:right">Sem 1</span><div class="trend-bar-wrap"><div class="trend-bar-fill" style="width:100%;background:var(--red)"></div></div><span style="width:36px">14:22</span></div>
+        <div class="trend-bar-row"><span style="width:36px;text-align:right">Sem 2</span><div class="trend-bar-wrap"><div class="trend-bar-fill" style="width:75%;background:var(--yellow)"></div></div><span style="width:36px">10:44</span></div>
+        <div class="trend-bar-row"><span style="width:36px;text-align:right">Sem 3</span><div class="trend-bar-wrap"><div class="trend-bar-fill" style="width:52%"></div></div><span style="width:36px">7:28</span></div>
+        <div class="trend-bar-row"><span style="width:36px;text-align:right">Sem 4</span><div class="trend-bar-wrap"><div class="trend-bar-fill" style="width:28%;background:var(--green)"></div></div><span style="width:36px">3:58</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">WhatsApp Bot · Estado</div>
+        <div style="font-size:12px;line-height:2;color:var(--muted2)">
+          <div>📱 Estado: <strong style="color:var(--green)">En línea</strong></div>
+          <div>📨 Alertas enviadas hoy: <strong>11</strong></div>
+          <div>✅ Confirmadas: <strong>9</strong> (82%)</div>
+          <div>⏳ Sin respuesta: <strong style="color:var(--yellow)">2</strong></div>
+          <div>⏱ Tiempo prom. respuesta: <strong>4m 12s</strong></div>
+        </div>
+        <div class="divider"></div>
+        <div style="font-family:monospace;font-size:11px;background:var(--surface3);padding:10px;border-radius:7px;line-height:1.8;color:#94a3b8">
+          <span style="color:#64748b">10:52</span> <span style="color:#f59e0b">⚠ Bot SurfaceAI:</span><br>
+          <span style="color:#e2e8f0">"pH Fosfatado: 5.32 y subiendo.<br>¿Confirmas atención? Responde 1=Sí, 2=Turno tarde"</span><br><br>
+          <span style="color:#64748b">— Sin respuesta aún (12 min)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  PAGE 4 — AMEF & COMPLIANCE
+────────────────────────────────────────── -->
+<div class="page" id="p4">
+  <div class="page-header">
+    <h1>AMEF & Compliance Hub</h1>
+    <p>Análisis de Modo y Efecto de Falla · Trazabilidad de lotes · Reportes ISO / IATF 16949</p>
+  </div>
+
+  <!-- Normas activas -->
+  <div class="card mb">
+    <div class="card-title">Certificaciones y Normas Activas</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">
+      <div class="std-badge"><span class="std-check">✓</span> ISO 9001:2015</div>
+      <div class="std-badge"><span class="std-check">✓</span> IATF 16949:2016</div>
+      <div class="std-badge"><span class="std-check">✓</span> Qualicoat Clase 1</div>
+      <div class="std-badge"><span class="std-check">✓</span> ASTM D3359 — Adhesión</div>
+      <div class="std-badge"><span class="std-check">✓</span> ASTM B117 — Salt Spray</div>
+      <div class="std-badge"><span class="std-check">✓</span> AAMA 2604</div>
+      <div class="std-badge" style="border-color:rgba(245,158,11,.4);color:var(--yellow)">⚠ REACH Cr(VI) — Sello libre de cromo ✓</div>
+    </div>
+  </div>
+
+  <div class="grid-2 mb">
+    <!-- AMEF table -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div class="card-title" style="margin:0">AMEF — Tabla de Riesgos del Proceso</div>
+        <span style="font-size:10px;color:var(--muted)">NPR = S × O × D</span>
+      </div>
+      <table class="amef-table">
+        <thead><tr>
+          <th>Modo de Falla</th><th>Efecto</th><th>S</th><th>O</th><th>D</th><th>NPR</th><th>Estado</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td>pH fosfatado &gt;5.6</td>
+            <td style="color:var(--muted2)">Capa porosa, baja adherencia</td>
+            <td>8</td><td>6</td><td>2</td>
+            <td class="npr npr-med">96</td>
+            <td><span class="tag tag-yellow">Monitorear</span></td>
+          </tr>
+          <tr>
+            <td>Cond. DI &gt;30 µS/cm</td>
+            <td style="color:var(--muted2)">Residuo iónico — ampollamiento</td>
+            <td>9</td><td>4</td><td>2</td>
+            <td class="npr npr-hi">72→<strong>288</strong></td>
+            <td><span class="tag tag-red">Acción inmediata</span></td>
+          </tr>
+          <tr>
+            <td>PMT horno &lt;188°C</td>
+            <td style="color:var(--muted2)">Subcurado — adhesión y dureza</td>
+            <td>9</td><td>3</td><td>3</td>
+            <td class="npr npr-med">81→<strong>243</strong></td>
+            <td><span class="tag tag-yellow">Plan de acción</span></td>
+          </tr>
+          <tr>
+            <td>Fe disuelto &gt;0.4%</td>
+            <td style="color:var(--muted2)">Capa gris polvosa, tono irregular</td>
+            <td>7</td><td>3</td><td>4</td>
+            <td class="npr npr-lo">84</td>
+            <td><span class="tag tag-green">Bajo control</span></td>
+          </tr>
+          <tr>
+            <td>Humedad cabina &gt;70%</td>
+            <td style="color:var(--muted2)">Micro-poros (outgassing)</td>
+            <td>8</td><td>2</td><td>3</td>
+            <td class="npr npr-lo">48</td>
+            <td><span class="tag tag-green">Bajo control</span></td>
+          </tr>
+          <tr>
+            <td>Contaminación silicón</td>
+            <td style="color:var(--muted2)">Ojo de pez (fisheye)</td>
+            <td>9</td><td>2</td><td>6</td>
+            <td class="npr npr-med">108</td>
+            <td><span class="tag tag-yellow">Protocolo limpieza</span></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="font-size:10px;color:var(--muted);margin-top:10px;line-height:1.7">
+        S = Severidad · O = Ocurrencia · D = Detección (escala 1–10)<br>
+        NPR ≥ 300: Acción inmediata &nbsp;·&nbsp; NPR 100–299: Plan de acción &nbsp;·&nbsp; NPR &lt; 100: Monitorear
+      </div>
+    </div>
+
+    <!-- Catálogo de defectos -->
+    <div class="card">
+      <div class="card-title">Catálogo de Defectos — Nomenclatura Industria</div>
+      <table class="amef-table">
+        <thead><tr><th>Defecto</th><th>Variable raíz</th><th>Norma ref.</th><th>Turno</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Ampollamiento</strong><div style="font-size:10px;color:var(--muted)">Blistering</div></td>
+            <td style="font-size:11px">Cond. DI alta · humedad</td>
+            <td><span class="tag tag-blue" style="font-size:10px">ASTM D714</span></td>
+            <td><span class="tag tag-green">0</span></td>
+          </tr>
+          <tr>
+            <td><strong>Falta de adherencia</strong><div style="font-size:10px;color:var(--muted)">Poor adhesion</div></td>
+            <td style="font-size:11px">pH fosfato, Fe alto</td>
+            <td><span class="tag tag-blue" style="font-size:10px">ASTM D3359</span></td>
+            <td><span class="tag tag-yellow">3</span></td>
+          </tr>
+          <tr>
+            <td><strong>Ojo de pez</strong><div style="font-size:10px;color:var(--muted)">Fisheye / Cratering</div></td>
+            <td style="font-size:11px">Silicón · aceite residual</td>
+            <td><span class="tag tag-blue" style="font-size:10px">ISO 4623</span></td>
+            <td><span class="tag tag-green">0</span></td>
+          </tr>
+          <tr>
+            <td><strong>Cáscara de naranja</strong><div style="font-size:10px;color:var(--muted)">Orange peel</div></td>
+            <td style="font-size:11px">PMT, fosfato irregular</td>
+            <td><span class="tag tag-blue" style="font-size:10px">ISO 8503</span></td>
+            <td><span class="tag tag-yellow">1</span></td>
+          </tr>
+          <tr>
+            <td><strong>Micro-poros</strong><div style="font-size:10px;color:var(--muted)">Pinholes / Outgassing</div></td>
+            <td style="font-size:11px">Humedad · espesor excesivo</td>
+            <td><span class="tag tag-blue" style="font-size:10px">ISO 2409</span></td>
+            <td><span class="tag tag-green">0</span></td>
+          </tr>
+          <tr>
+            <td><strong>Subcurado</strong><div style="font-size:10px;color:var(--muted)">Undercure</div></td>
+            <td style="font-size:11px">PMT &lt; 188°C o t &lt; 10 min</td>
+            <td><span class="tag tag-blue" style="font-size:10px">MEK Rub Test</span></td>
+            <td><span class="tag tag-yellow">3</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Trazabilidad de lotes -->
+  <div class="card mb">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <div class="card-title" style="margin:0">Trazabilidad de Lotes — Turno Matutino</div>
+      <button class="audit-btn" onclick="generatePDF()">📄 Generar PDF de Auditoría ISO</button>
+    </div>
+    <table class="lot-table">
+      <thead><tr>
+        <th>Lote</th><th>Hora inicio</th><th>Piezas</th><th>pH Fosf. (min/max)</th><th>PMT Pico</th><th>Inmersión</th><th>FPY lote</th><th>Inspector</th><th>Estado</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>L-2024-0889</td><td>06:10</td><td>152</td><td>4.98 / 5.08</td><td>197°C</td><td>5:18</td><td><strong style="color:var(--green)">100%</strong></td><td>Ing. Martínez</td><td><span class="tag tag-green">Aprobado</span></td></tr>
+        <tr><td>L-2024-0890</td><td>07:55</td><td>148</td><td>5.02 / 5.15</td><td>198°C</td><td>5:22</td><td><strong style="color:var(--green)">99.3%</strong></td><td>Op. Torres</td><td><span class="tag tag-green">Aprobado</span></td></tr>
+        <tr class="risk-row"><td>L-2024-0891</td><td>09:40</td><td>145</td><td>5.10 / 5.28</td><td><strong style="color:var(--yellow)">189°C</strong></td><td>5:14</td><td><strong style="color:var(--yellow)">97.9%</strong></td><td>Op. Torres</td><td><span class="tag tag-yellow">En revisión</span></td></tr>
+        <tr><td>L-2024-0892</td><td>11:25</td><td>149</td><td>5.18 / 5.32</td><td>198°C</td><td>5:20</td><td><strong style="color:var(--green)">99.3%</strong></td><td>Ing. Martínez</td><td><span class="tag tag-green">Aprobado</span></td></tr>
+        <tr><td>L-2024-0893</td><td>En proceso</td><td>—</td><td>5.25 / 5.32</td><td>—</td><td>—</td><td>—</td><td>Ing. Martínez</td><td><span class="tag tag-blue">En proceso</span></td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px">
+      ⚠ Lote L-0891: PMT bajó a 189°C por apertura de puerta horno a las 10:02 AM. 3 piezas separadas para prueba MEK Rub + adhesión cruzada ASTM D3359.
+    </div>
+  </div>
+</div>
+
+<!-- ──────────────────────────────────────────
+  PAGE 5 — IA ADVISOR
+────────────────────────────────────────── -->
+<div class="page" id="p5">
+  <div class="page-header">
+    <h1>IA Advisor & Computer Vision</h1>
+    <p>Motor de análisis conectado al Gateway GT100 · Zinc fosfato + Polvo Poliéster</p>
+  </div>
+
+  <div class="ai-layout">
+    <div>
+      <!-- Chatbot -->
+      <div class="chat-window">
+        <div class="chat-header">
+          <div class="ai-av">◈</div>
+          <div>
+            <div style="font-size:13px;font-weight:600">Process Expert — SurfaceAI</div>
+            <div style="font-size:10px;color:var(--green)">● En línea · GT100 · 18 sensores · Zinc fosfato</div>
+          </div>
+        </div>
+        <div class="chat-body" id="chatBody">
+          <div class="msg-ai">
+            Buen día. Soy tu <strong>Process Expert</strong>, entrenado en química de pretratamiento y curado de polvo. Tengo acceso en tiempo real al GT100 de tu línea. Actualmente monitoreo un aviso activo: <span class="highlight">pH fosfatado en 5.32 con tendencia ascendente</span>. ¿Quieres que analice la causa o me preguntas sobre otro tema?
+          </div>
+          <div class="msg-user" id="uMsg1" style="display:none"></div>
+          <div class="msg-ai" id="aMsg1" style="display:none"></div>
+          <div class="msg-user" id="uMsg2" style="display:none"></div>
+          <div class="msg-ai" id="aMsg2" style="display:none"></div>
+        </div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="chatInput" placeholder="Pregunta sobre el proceso..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="send-btn" onclick="sendChat()">Enviar</button>
+        </div>
+      </div>
+
+      <!-- Quick prompts -->
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">Consultas frecuentes</div>
+        <div style="display:flex;flex-wrap:wrap;gap:7px">
+          <button class="quick-btn" onclick="ask('¿Por qué está subiendo el pH del fosfatado?')">¿Por qué sube el pH?</button>
+          <button class="quick-btn" onclick="ask('¿Cuándo debo cambiar el baño de fosfatado?')">¿Cuándo cambiar el baño?</button>
+          <button class="quick-btn" onclick="ask('¿Qué causa la falta de adherencia?')">Causa falta adherencia</button>
+          <button class="quick-btn" onclick="ask('¿Cómo está el perfil de curado hoy?')">Perfil de curado</button>
+          <button class="quick-btn" onclick="ask('¿Cuánto ahorramos vs. el mes pasado?')">ROI este mes</button>
+          <button class="quick-btn" onclick="ask('¿Qué es el Ácido Libre y cómo lo controlo?')">Ácido Libre — ¿qué es?</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <!-- Predictive alerts -->
+      <div class="card mb">
+        <div class="card-title">Mantenimiento Predictivo — Sensores GT100</div>
+        <div class="predict-item">
+          <div class="pred-icon">🔬</div>
+          <div>
+            <div class="pred-title">Electrodo pH Fosfatado — Recalibración en 4 días</div>
+            <div class="pred-desc">Deriva de +0.02 pH/día detectada vs. patrón de referencia. Calibrar con buffers pH 4.0 y 7.0. Reemplazar si persiste &gt;±0.05 pH de diferencia.</div>
+          </div>
+        </div>
+        <div class="predict-item">
+          <div class="pred-icon">💧</div>
+          <div>
+            <div class="pred-title">Resina DI — Regeneración preventiva en 2 días</div>
+            <div class="pred-desc">Conductividad DI subió de 12 a 18 µS/cm en 6 días. Capacidad de intercambio agotándose. Programar regeneración antes de que supere 30 µS/cm.</div>
+          </div>
+        </div>
+        <div class="predict-item">
+          <div class="pred-icon">⚗️</div>
+          <div>
+            <div class="pred-title">Baño Fosfatado — Reposición parcial en ~5 días</div>
+            <div class="pred-desc">Fe disuelto: 0.31% (límite 0.40%). Tasa de incremento: +0.018%/día. Proyección de cambio parcial (20% volumen) en 5 días para mantener calidad de cristales.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vision AI defects -->
+      <div class="card">
+        <div class="card-title">Computer Vision — Defectos Detectados · Turno</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div class="defect-card">
+            <div class="defect-img">🟡</div>
+            <div class="defect-body">
+              <div class="defect-name">Cáscara de naranja</div>
+              <div class="defect-cause">PMT 189°C · Lote 0891 · Zona media</div>
+              <div class="conf-row"><span class="conf-num">91%</span><div class="conf-bar-w"><div class="conf-bar-f" style="width:91%;background:var(--yellow)"></div></div></div>
+            </div>
+          </div>
+          <div class="defect-card">
+            <div class="defect-img">🔴</div>
+            <div class="defect-body">
+              <div class="defect-name">Falta de adherencia</div>
+              <div class="defect-cause">pH 5.28 pico · Lote 0891 · Borde inferior</div>
+              <div class="conf-row"><span class="conf-num">87%</span><div class="conf-bar-w"><div class="conf-bar-f" style="width:87%;background:var(--red)"></div></div></div>
+            </div>
+          </div>
+          <div class="defect-card">
+            <div class="defect-img">⚪</div>
+            <div class="defect-body">
+              <div class="defect-name">Marca herramienta</div>
+              <div class="defect-cause">Pre-existente · No es defecto proceso</div>
+              <div class="conf-row"><span class="conf-num">98%</span><div class="conf-bar-w"><div class="conf-bar-f" style="width:98%;background:var(--green)"></div></div></div>
+            </div>
+          </div>
+          <div class="defect-card">
+            <div class="defect-img">🟢</div>
+            <div class="defect-body">
+              <div class="defect-name">Pieza muestra aprobada</div>
+              <div class="defect-cause">Referencia turno · Adhesión 5B · OK</div>
+              <div class="conf-row"><span class="conf-num">99%</span><div class="conf-bar-w"><div class="conf-bar-f" style="width:99%;background:var(--green)"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center;border-top:1px solid var(--border);padding-top:12px">
+          <div><div style="font-size:22px;font-weight:700;color:var(--accent)">1,248</div><div style="font-size:10px;color:var(--muted)">Inspeccionadas</div></div>
+          <div><div style="font-size:22px;font-weight:700;color:var(--red)">4</div><div style="font-size:10px;color:var(--muted)">Defectos conf.</div></div>
+          <div><div style="font-size:22px;font-weight:700;color:var(--green)">99.7%</div><div style="font-size:10px;color:var(--muted)">Tasa aprobación</div></div>
+          <div><div style="font-size:22px;font-weight:700;color:var(--yellow)">1</div><div style="font-size:10px;color:var(--muted)">Falso positivo</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+// ── Navigation ──
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+function selLine(n, el) {
+  document.querySelectorAll('.line-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+function selRole(role, el) {
+  document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const desc = {
+    jefe: 'Vista gerencial · Línea 1 — Pintura en Polvo Electrostático · Turno Matutino 06:00–14:00',
+    ing:  'Vista de Ingeniero de Proceso · Zinc fosfato · Polvo Poliéster · GT100 activo',
+    op:   'Vista Operador de Línea · Turno Matutino · Ing. en guardia: Martínez'
+  };
+  const el2 = document.getElementById('roleDesc');
+  if(el2) el2.textContent = desc[role];
+}
+
+// ── Clock ──
+function tick() {
+  const n = new Date();
+  const c = document.getElementById('clock');
+  if(c) c.textContent = n.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(tick, 1000); tick();
+
+// ── Live simulation ──
+let t = 0;
+setInterval(() => {
+  t++;
+  // pH drift simulation
+  const ph = 5.32 + Math.sin(t * 0.4) * 0.04 + (t * 0.002);
+  const phClamped = Math.min(5.55, Math.max(4.45, ph));
+  const phStr = phClamped.toFixed(2);
+  ['phVal','sc-ph'].forEach(id => {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.textContent = phStr;
+    el.className = el.className.replace(/ok|warn|crit/g,'').trim();
+    if(phClamped >= 5.5) el.classList.add('crit');
+    else if(phClamped >= 5.3) el.classList.add('warn');
+    else el.classList.add('ok');
+  });
+
+  // Speed
+  const spd = 3.4 + Math.sin(t*0.3)*0.12;
+  const spdEl = document.getElementById('lineSpeed');
+  if(spdEl) spdEl.innerHTML = spd.toFixed(1) + '<span class="stat-unit">m/min</span>';
+
+  // OEE slight variation
+  const oee = Math.round(84 + Math.sin(t*0.2)*1);
+  const oeeEl = document.getElementById('oeeVal');
+  if(oeeEl) oeeEl.innerHTML = oee + '<span class="stat-unit">%</span>';
+
+  // Last update counter
+  const lu = document.getElementById('lastUpdate');
+  if(lu) lu.textContent = ((t*2) % 15) + 1;
+}, 2000);
+
+// ── Chatbot ──
+const aiAnswers = {
+  '¿Por qué está subiendo el pH del fosfatado?': `El pH ascendente de <strong>5.32 → tendencia</strong> tiene dos causas principales que detecté en el GT100:\n\n1. <strong>Agotamiento de ácido libre</strong> — La titulación de las 10:30 mostró Ácido Libre en 0.74%. A ese nivel, la capacidad buffer del baño se reduce y el pH sube con cada pieza procesada. La relación Ácido Total/Libre pasó de 2.15 a 2.46 esta semana.\n\n2. <strong>Fe disuelto acumulado (0.31%)</strong> — A mayor Fe²⁺, mayor consumo de ácido libre. El baño lleva 18 días en servicio.\n\n<strong>Acción recomendada:</strong> Agregar 150–200 ml de solución replenisher de H₃PO₄ al Tanque Fosfatado en la próxima pausa de línea. Verificar pH a los 10 min. Si no baja a &lt;5.1, evaluar reposición parcial del 15% del volumen.`,
+
+  '¿Cuándo debo cambiar el baño de fosfatado?': `Con base en los datos actuales, proyecto <strong>vida útil restante: ~5–7 días</strong>.\n\nIndicadores que monitoreo:\n• Fe disuelto: 0.31% — límite operativo 0.40% (a +0.018%/día = 5 días)\n• Ácido Libre: decae 0.04%/día — requerirá dosificación diaria\n• pH: tendencia ascendente de +0.08 unidades/hora\n\n<strong>Recomendación:</strong> No cambio total — <strong>reposición parcial del 20% del volumen</strong> (más económico). Programar para el siguiente turno nocturno. Esto resetea Fe disuelto a ~0.25% y estabiliza el pH.\n\nSi decides cambio total, el tiempo estimado es 4 horas. Coordinar con proveedor para solución fosfato fresca.`,
+
+  '¿Qué causa la falta de adherencia?': `La falta de adherencia (<em>poor adhesion</em>) en tu línea tiene <strong>3 causas raíz más frecuentes</strong>, en orden de probabilidad:\n\n1. <strong>pH fosfatado fuera de rango &gt;5.6</strong> — Genera cristales de fosfato porosos o incompletos (&lt;1.8 g/m²). La capa no ancla mecánicamente el polvo. Norma ref: ASTM D3359.\n\n2. <strong>Conductividad enjuague DI alta &gt;30 µS/cm</strong> — Deja residuo iónico sobre la capa de fosfato. Cuando el polvo cura, la humedad residual genera ósmosis inversa debajo de la película → desprendimiento.\n\n3. <strong>PMT insuficiente &lt;188°C o tiempo &lt;10 min</strong> — Polvo subcurado no completa el crosslinking. El MEK Rub Test lo detecta: &lt;50 frotamientos = subcurado.\n\nEn el lote L-0891 de hoy, la causa probable es la combinación de pH 5.28 + PMT 189°C.`,
+
+  '¿Cómo está el perfil de curado hoy?': `El perfil de curado de hoy está <strong>dentro de especificación con una observación</strong>:\n\n• Zona 1 (precalentamiento): 172°C ✓ (set: 165–180°C)\n• Zona 2 (pico PMT): 198°C ✓ (spec: 190–210°C)\n• Zona 3 (salida): 88°C ✓\n• Velocidad conveyor: 3.4 m/min ✓\n\n<strong>Observación:</strong> En el lote L-0891 a las 10:02 AM, apertura de puerta causó caída a PMT 189°C durante ~4 minutos. Eso está justo en el límite inferior (190°C). Las 3 piezas de ese intervalo fueron separadas correctamente para prueba MEK Rub.\n\n<strong>Para polvo poliéster estándar</strong>: el ciclo requerido es PMT ≥195°C por mínimo 10 minutos. La velocidad actual de 3.4 m/min da ~12.5 min en zona pico. Margen adecuado.`,
+
+  '¿Cuánto ahorramos vs. el mes pasado?': `Comparativa mes actual vs. mes anterior:\n\n• <strong>Scrap:</strong> $61,200 MXN vs $87,400 MXN → <strong>ahorro $26,200 (30%)</strong>\n• <strong>Retrabajo:</strong> 4.8% vs 7.2% de producción → <strong>-38 horas-hombre/semana</strong>\n• <strong>MTTR:</strong> 3:58 min vs 14:22 min → <strong>Downtime reducido 72%</strong>\n• <strong>Consumo H₃PO₄:</strong> 82 L vs 110 L → <strong>ahorro $4,800 MXN (25%)</strong>\n• <strong>OEE:</strong> 84% vs 76% → +8 puntos\n\n<strong>Proyección mensual:</strong> Si mantiene tendencia, ahorro acumulado estimado <strong>$312,000 MXN/año</strong> (scrap + retrabajo + químicos + downtime).`,
+
+  '¿Qué es el Ácido Libre y cómo lo controlo?': `El <strong>Ácido Libre</strong> es el H₃PO₄ disponible en el baño — el "combustible" que reacciona con el metal para formar la capa de fosfato.\n\n<strong>Medición:</strong> Titulación con NaOH 0.1N hasta punto de equivalencia pH 8.5–9.0 (indicador fenolftaleína). Resultado en "puntos" o %.\n\n<strong>Rango correcto para zinc fosfato:</strong> 0.5 – 1.0 %\n• Por debajo de 0.4%: reacción lenta, capa delgada e incompleta\n• Por encima de 1.2%: ataque excesivo al metal, capa polvosa\n\n<strong>Diferencia con Ácido Total:</strong> El Ácido Total incluye el fosfato mono-básico (H₂PO₄⁻) además del Ácido Libre. La relación AT/AL indica el estado del baño — si sube de 3.0, el baño está agotándose.\n\n<strong>En tu línea ahora:</strong> AL=0.74%, AT=1.82%, relación 2.46 — dentro de rango pero con tendencia a subir. Verificar en turno tarde.`
+};
+
+let msgCount = 0;
+function ask(q) {
+  if(msgCount >= 2) {
+    document.getElementById('chatBody').innerHTML += `<div class="msg-user" style="align-self:flex-end;background:#1d4ed8;border-radius:10px 10px 2px 10px;padding:9px 13px;font-size:12px;max-width:82%;line-height:1.5">${q}</div><div class="msg-ai" style="align-self:flex-start;background:var(--surface2);border:1px solid var(--border);border-radius:10px 10px 10px 2px;padding:9px 13px;font-size:12px;max-width:90%;line-height:1.6;color:var(--muted2);font-style:italic">Analizando datos del GT100...</div>`;
+    const body = document.getElementById('chatBody');
+    body.scrollTop = body.scrollHeight;
+    setTimeout(() => {
+      const msgs = body.querySelectorAll('.msg-ai');
+      const last = msgs[msgs.length-1];
+      const resp = aiAnswers[q] || 'He revisado los datos del GT100. La variable más correlacionada con tu consulta es el <strong>pH del Fosfatado</strong>. Recomiendo revisar el registro de titulación y ajustar la dosificación según el procedimiento estándar.';
+      last.innerHTML = resp.replace(/\n/g,'<br>');
+      last.style.color = '';
+      last.style.fontStyle = '';
+      body.scrollTop = body.scrollHeight;
+    }, 1400);
+    return;
+  }
+  msgCount++;
+  const uEl = document.getElementById(`uMsg${msgCount}`);
+  const aEl = document.getElementById(`aMsg${msgCount}`);
+  if(!uEl || !aEl) return;
+  uEl.textContent = q; uEl.style.display = 'block';
+  aEl.innerHTML = '<em style="color:var(--muted)">Analizando datos del GT100...</em>'; aEl.style.display = 'block';
+  const body = document.getElementById('chatBody');
+  body.scrollTop = body.scrollHeight;
+  setTimeout(() => {
+    const resp = aiAnswers[q] || 'He revisado los datos. Recomiendo verificar el registro de titulación del turno y ajustar dosificación de ácido libre según el procedimiento estándar.';
+    aEl.innerHTML = resp.replace(/\n/g,'<br>');
+    body.scrollTop = body.scrollHeight;
+  }, 1400);
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const q = input.value.trim();
+  if(!q) return;
+  ask(q);
+  input.value = '';
+}
+
+function generatePDF() {
+  alert('📄 Generando Reporte de Auditoría ISO...\n\nEl reporte incluye:\n• Trazabilidad completa de 4 lotes\n• Registros de titulación del turno\n• Historial de alertas y tiempos de respuesta\n• Parámetros críticos: pH, PMT, Cond. DI\n• FPY por lote con evidencia de defectos\n• Firma digital del inspector\n• Sello de cumplimiento: ISO 9001 · IATF 16949 · Qualicoat\n\n✓ PDF generado · Listo para auditor');
+}
+</script>
+</body>
+</html>
