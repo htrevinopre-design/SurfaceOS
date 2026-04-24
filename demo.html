@@ -234,6 +234,104 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .pred-desc{font-size:11px;color:var(--muted2);line-height:1.5}
 
 /* ══════════════════════════════════
+   INVESTIGATION WIZARD
+══════════════════════════════════ */
+.inv-overlay{position:fixed;inset:0;background:rgba(4,8,18,.88);backdrop-filter:blur(8px);z-index:300;display:none;align-items:center;justify-content:center;padding:16px}
+.inv-overlay.open{display:flex}
+.inv-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:860px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.6)}
+.inv-hdr{padding:20px 24px 0;border-bottom:1px solid var(--border);flex-shrink:0}
+.inv-hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.inv-badge{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#93c5fd;letter-spacing:-.2px}
+.inv-close{width:30px;height:30px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;color:var(--muted);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.inv-close:hover{color:var(--text);border-color:var(--muted)}
+.inv-steps{display:flex;align-items:center;gap:0;padding-bottom:0}
+.inv-step{padding:10px 20px;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;cursor:default;transition:all .2s;white-space:nowrap}
+.inv-step.active{color:#93c5fd;border-bottom-color:var(--accent)}
+.inv-step.done{color:var(--green);border-bottom-color:var(--green)}
+.inv-step-sep{color:var(--border);font-size:12px;padding:0 2px}
+.inv-body{flex:1;overflow-y:auto;padding:24px}
+.inv-body h3{font-size:17px;font-weight:700;letter-spacing:-.3px;margin-bottom:6px}
+.inv-sub{font-size:13px;color:var(--muted2);margin-bottom:20px;line-height:1.5}
+
+/* Fault grid */
+.fault-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.fault-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 12px;cursor:pointer;transition:all .18s;text-align:center;user-select:none}
+.fault-card:hover{border-color:rgba(59,130,246,.5);background:rgba(59,130,246,.06)}
+.fault-card.selected{border-color:var(--accent);background:rgba(59,130,246,.12)}
+.fc-icon{font-size:24px;margin-bottom:7px}
+.fc-name{font-size:12px;font-weight:700;margin-bottom:2px}
+.fc-en{font-size:10px;color:var(--muted)}
+.fault-custom{margin-top:4px}
+.fault-custom label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px}
+.inv-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:inherit;transition:border-color .15s}
+.inv-input:focus{border-color:var(--accent)}
+.inv-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;outline:none;font-family:inherit;resize:vertical;min-height:72px;transition:border-color .15s}
+.inv-textarea:focus{border-color:var(--accent)}
+
+/* Fields */
+.inv-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.inv-field{display:flex;flex-direction:column;gap:5px}
+.inv-field label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.inv-field-full{grid-column:1/-1}
+
+/* Buttons */
+.inv-btn{display:inline-flex;align-items:center;gap:7px;background:var(--accent);border:none;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit}
+.inv-btn:hover{background:#2563eb}
+.inv-btn-sec{display:inline-flex;align-items:center;gap:7px;background:var(--surface2);border:1px solid var(--border);color:var(--muted2);padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.inv-btn-sec:hover{border-color:var(--muted);color:var(--text)}
+.inv-btn-green{background:#16a34a}
+.inv-btn-green:hover{background:#15803d}
+.inv-row-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+
+/* Analysis results */
+.inv-result-hdr{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:18px}
+.inv-num{font-family:monospace;font-size:11px;color:var(--muted);margin-bottom:4px;letter-spacing:.5px}
+.inv-result-title{font-size:16px;font-weight:700;margin-bottom:3px;letter-spacing:-.3px}
+.inv-result-meta{font-size:12px;color:var(--muted2)}
+
+.var-out-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.var-out-item{background:var(--surface2);border-radius:9px;padding:13px 16px;display:flex;align-items:center;gap:14px;border-left:3px solid}
+.var-out-crit{border-left-color:var(--red)}
+.var-out-warn{border-left-color:var(--yellow)}
+.var-out-ok{border-left-color:var(--green)}
+.vo-icon{font-size:18px;flex-shrink:0}
+.vo-name{font-size:13px;font-weight:700;margin-bottom:1px}
+.vo-detail{font-size:11px;color:var(--muted2)}
+.vo-right{margin-left:auto;text-align:right;flex-shrink:0}
+.vo-val{font-size:14px;font-weight:700}
+.vo-limit{font-size:10px;color:var(--muted);margin-top:1px}
+.vo-duration{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2);padding:2px 7px;border-radius:9999px;margin-top:4px}
+.vo-duration.warn-dur{background:rgba(245,158,11,.1);color:#fcd34d;border-color:rgba(245,158,11,.2)}
+
+.sparkline-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+.sparkline-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:13px 14px}
+.sp-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.sp-val-row{display:flex;align-items:baseline;gap:5px;margin-bottom:8px}
+.sp-val{font-size:18px;font-weight:700}
+.sp-unit{font-size:11px;color:var(--muted2)}
+.sp-limit-line{font-size:10px;color:var(--muted);margin-top:4px}
+
+.cause-card{background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.2);border-radius:10px;padding:16px 18px;margin-bottom:18px}
+.cause-title{font-size:11px;font-weight:600;color:#93c5fd;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.cause-body{font-size:13px;color:var(--text);line-height:1.7}
+
+.actions-list{list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.action-item{display:flex;align-items:flex-start;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:12.5px;color:var(--muted2);line-height:1.5}
+.action-num{width:20px;height:20px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px}
+
+.inv-open-btn{display:inline-flex;align-items:center;gap:8px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;padding:8px 16px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit}
+.inv-open-btn:hover{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.5);color:#fff}
+
+@media(max-width:768px){
+  .fault-grid{grid-template-columns:repeat(2,1fr)}
+  .inv-fields{grid-template-columns:1fr}
+  .sparkline-grid{grid-template-columns:1fr}
+  .inv-modal{max-height:95vh;border-radius:12px}
+  .inv-body{padding:16px}
+  .inv-step{padding:10px 12px;font-size:11px}
+}
+
+/* ══════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════ */
 @media(max-width:768px){
@@ -958,9 +1056,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
   PAGE 4 — AMEF & COMPLIANCE
 ────────────────────────────────────────── -->
 <div class="page" id="p4">
-  <div class="page-header">
-    <h1>AMEF & Compliance Hub</h1>
-    <p>Análisis de Modo y Efecto de Falla · Trazabilidad de lotes · Reportes ISO / IATF 16949</p>
+  <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <h1>AMEF & Compliance Hub</h1>
+      <p>Análisis de Modo y Efecto de Falla · Trazabilidad de lotes · Reportes ISO / IATF 16949</p>
+    </div>
+    <button class="inv-open-btn" onclick="openInv()">🔍 Iniciar investigación de falla</button>
   </div>
 
   <!-- Normas activas -->
@@ -1361,6 +1462,477 @@ function sendChat() {
 function generatePDF() {
   alert('📄 Generando Reporte de Auditoría ISO...\n\nEl reporte incluye:\n• Trazabilidad completa de 4 lotes\n• Registros de titulación del turno\n• Historial de alertas y tiempos de respuesta\n• Parámetros críticos: pH, PMT, Cond. DI\n• FPY por lote con evidencia de defectos\n• Firma digital del inspector\n• Sello de cumplimiento: ISO 9001 · IATF 16949 · Qualicoat\n\n✓ PDF generado · Listo para auditor');
 }
+
+/* ══════════════════════════════════
+   INVESTIGATION WIZARD
+══════════════════════════════════ */
+const FAULTS = [
+  { id:'adherencia', icon:'🔩', name:'Falta de adherencia', en:'Poor adhesion' },
+  { id:'ampollamiento', icon:'💧', name:'Ampollamiento', en:'Blistering' },
+  { id:'ojopez', icon:'👁', name:'Ojo de pez', en:'Fisheye / Cratering' },
+  { id:'cascara', icon:'🍊', name:'Cáscara de naranja', en:'Orange peel' },
+  { id:'microporos', icon:'🔬', name:'Micro-poros', en:'Pinholes / Outgassing' },
+  { id:'subcurado', icon:'🌡', name:'Subcurado', en:'Undercure' },
+  { id:'decoloracion', icon:'🎨', name:'Decoloración', en:'Color variation' },
+  { id:'espesor', icon:'📏', name:'Espesor fuera de spec', en:'Film thickness OOS' },
+];
+
+const FAULT_DATA = {
+  adherencia: {
+    vars: [
+      { name:'Conductividad Enjuague 2', val:'224 µS/cm', limit:'≤ 30 µS/cm', status:'crit', dur:'2h 13min', detail:'Resina DI agotada — alto residuo iónico sobre pieza' },
+      { name:'pH Fosfatado', val:'5.61', limit:'≤ 5.50', status:'crit', dur:'47 min', detail:'Exceso de alcalinidad — capa porosa e irregular' },
+      { name:'Fe disuelto', val:'0.38%', limit:'≤ 0.40%', status:'warn', dur:'—', detail:'Cerca del límite — cristales de fosfato menos densos' },
+    ],
+    ok: [
+      { name:'Temperatura fosfatado', val:'52°C', limit:'50–55°C' },
+      { name:'PMT Horno', val:'198°C', limit:'190–210°C' },
+    ],
+    sparklines: [
+      { label:'Cond. Enjuague 2 (µS/cm)', val:'224', unit:'µS/cm', limit:'Límite: 30', color:'#ef4444',
+        points:'0,60 20,58 40,50 60,35 80,10 100,8 120,14 140,22 160,38 180,55 200,58 220,60 240,62 260,60' },
+      { label:'pH Fosfatado', val:'5.61', unit:'pH', limit:'Límite sup: 5.50', color:'#f59e0b',
+        points:'0,50 30,45 60,40 90,35 120,32 150,28 180,22 210,18 240,14 270,10 300,8' },
+    ],
+    cause:'La conductividad del Enjuague 2 estuvo por encima del límite crítico (30 µS/cm) durante más de 2 horas — la resina DI estaba agotada. El residuo iónico remanente en la pieza interrumpe la nucleación correcta del fosfato de zinc, resultando en una capa discontinua con baja fuerza de adhesión. El pH alto del fosfatado (5.61 por +47 min) contribuyó con una capa menos densa que no ancla bien el polvo.',
+    actions:[
+      'Regenerar columna DI de inmediato y confirmar conductividad ≤ 30 µS/cm antes de reiniciar',
+      'Separar las piezas de los lotes procesados durante el período fuera de rango para prueba ASTM D3359',
+      'Revisar el logbook de regeneración: el intervalo actual no es suficiente para el volumen de producción',
+      'Ajustar el pH del fosfatado: agregar ácido fosfórico según curva de titulación en dosis de 0.5 L y esperar 5 min',
+      'Aumentar frecuencia de medición de conductividad DI a cada 20 min durante el turno de corrección',
+    ]
+  },
+  ampollamiento: {
+    vars: [
+      { name:'Conductividad Enjuague 2', val:'186 µS/cm', limit:'≤ 30 µS/cm', status:'crit', dur:'1h 08min', detail:'Residuo iónico — ampollamiento por presión osmótica bajo el film' },
+      { name:'HR interior horno', val:'38%', limit:'≤ 25%', status:'crit', dur:'34 min', detail:'Humedad en horno favorece burbujas durante el curado' },
+      { name:'Temperatura secado Z2', val:'108°C', limit:'100–130°C', status:'ok', dur:'—', detail:'Dentro de rango' },
+    ],
+    ok: [
+      { name:'pH Fosfatado', val:'5.05', limit:'4.5–5.5' },
+      { name:'PMT Horno', val:'198°C', limit:'190–210°C' },
+    ],
+    sparklines: [
+      { label:'Cond. Enjuague 2 (µS/cm)', val:'186', unit:'µS/cm', limit:'Límite: 30', color:'#ef4444',
+        points:'0,55 20,52 40,50 60,38 80,18 100,14 120,20 140,35 160,48 180,52 200,55 220,54' },
+      { label:'HR Horno interior (%)', val:'38%', unit:'%', limit:'Límite: 25%', color:'#ef4444',
+        points:'0,20 40,22 80,24 120,30 160,38 180,40 200,42 220,35 260,22 300,18' },
+    ],
+    cause:'Combinación de dos factores: residuo iónico sobre la pieza (conductividad DI alta) y humedad elevada en el horno durante el arranque. La presión osmótica del residuo iónico atrapado bajo el film, acelerada por la humedad en la zona de curado, genera el ampollamiento. El problema se concentra en las piezas procesadas durante la primera hora del turno.',
+    actions:[
+      'Verificar y regenerar resina DI — conductividad debe bajar a ≤ 30 µS/cm',
+      'Purgar el horno durante 10–15 min antes del primer lote del turno para eliminar humedad acumulada overnight',
+      'Instalar deshumidificador en la entrada del horno o aumentar temperatura de secado a 130°C',
+      'Separar las piezas del primer lote y realizar prueba de corte con bisturí + cinta (ASTM D3359)',
+      'Revisar las juntas y sellos de la puerta del horno para evitar ingreso de humedad ambiental',
+    ]
+  },
+  ojopez: {
+    vars: [
+      { name:'Contaminación silicón detectada', val:'POSITIVO', limit:'Negativo', status:'crit', dur:'—', detail:'Traza de lubricante o desmoldante en piezas — incompatible con polvo poliéster' },
+      { name:'HR Cabina de pintura', val:'67%', limit:'≤ 60%', status:'warn', dur:'52 min', detail:'Humedad alta en cabina puede amplificar el efecto fisheye' },
+    ],
+    ok: [
+      { name:'Voltaje pistola', val:'72 kV', limit:'65–80 kV' },
+      { name:'Presión aire pistola', val:'18 PSI', limit:'15–22 PSI' },
+      { name:'pH Fosfatado', val:'5.08', limit:'4.5–5.5' },
+    ],
+    sparklines: [
+      { label:'HR Cabina (%)', val:'67%', unit:'%', limit:'Límite: 60%', color:'#f59e0b',
+        points:'0,30 40,35 80,38 120,42 160,46 200,50 240,52 260,52 280,48 300,42' },
+      { label:'Voltaje pistola (kV)', val:'72', unit:'kV', limit:'Rango: 65–80 kV', color:'#22c55e',
+        points:'0,38 40,40 80,38 120,39 160,40 200,39 240,38 280,40 300,39' },
+    ],
+    cause:'La causa principal es contaminación por silicón en la superficie de las piezas — probablemente de un lubricante usado en el área de prensa o corte. El silicón tiene tensión superficial muy baja y actúa como repelente del polvo poliéster, creando los cráteres circulares característicos. La humedad elevada en la cabina (67% por 52 min) amplifica el defecto pero no es la causa raíz.',
+    actions:[
+      'Identificar y eliminar la fuente de contaminación: revisar lubricantes, desmoldantes o aceites usados antes del proceso de pintura',
+      'Implementar protocolo de limpieza con disolvente libre de silicón (MEK o acetona) antes de colgar piezas',
+      'Prohibir el uso de lubricantes con silicón en toda la cadena de producción previa al pintado',
+      'Instalar control de humedad en la cabina — deshumidificador con set point de 50% HR',
+      'Revisión inmediata del proveedor de lubricantes y cambio a alternativas sin silicón',
+    ]
+  },
+  cascara: {
+    vars: [
+      { name:'PMT Zona 2 (pico)', val:'189°C', limit:'190–210°C', status:'warn', dur:'18 min', detail:'PMT ligeramente baja — flujo del polvo comprometido antes de gelificación' },
+      { name:'Espesor promedio', val:'88 µm', limit:'60–80 µm', status:'warn', dur:'—', detail:'Exceso de polvo — reduce el flujo y aumenta la textura de cáscara' },
+      { name:'Velocidad cadena', val:'3.1 m/min', limit:'3.2–3.6 m/min', status:'warn', dur:'22 min', detail:'Velocidad baja — mayor tiempo en zona baja del horno antes del pico' },
+    ],
+    ok: [
+      { name:'HR Cabina', val:'51%', limit:'≤ 60%' },
+      { name:'Voltaje pistola', val:'72 kV', limit:'65–80 kV' },
+    ],
+    sparklines: [
+      { label:'PMT Zona 2 (°C)', val:'189°C', unit:'°C', limit:'Mínimo: 190°C', color:'#f59e0b',
+        points:'0,38 30,36 60,34 90,30 120,28 150,28 180,30 210,32 240,36 270,38 300,40' },
+      { label:'Espesor película (µm)', val:'88', unit:'µm', limit:'Máx: 80 µm', color:'#f59e0b',
+        points:'0,42 30,46 60,50 90,54 120,56 150,56 180,54 210,52 240,50 270,48 300,45' },
+    ],
+    cause:'Combinación de PMT ligeramente por debajo del mínimo (189°C por 18 min) y exceso de espesor de película (88 µm vs 80 µm máximo). El polvo en capas gruesas necesita más energía para fundir y nivelar correctamente. Con PMT justa, la viscosidad del polvo no baja lo suficiente antes de la gelificación, resultando en la textura rugosa característica.',
+    actions:[
+      'Calibrar la velocidad de la cadena — verificar sprocket y encoder. Set point: 3.4 m/min',
+      'Reducir el espesor de aplicación: bajar caudal de polvo y/o aumentar distancia pistola-pieza a 25–30 cm',
+      'Aumentar set point de Zona 2 del horno en 5°C para compensar durante la corrección',
+      'Calibrar el medidor de espesor húmedo y ajustar los parámetros de las pistolas',
+      'Verificar que las piezas cáscara de naranja del lote cumplan con prueba de espesor seco (±10 µm)',
+    ]
+  },
+  microporos: {
+    vars: [
+      { name:'HR interior horno', val:'42%', limit:'≤ 25%', status:'crit', dur:'1h 22min', detail:'Humedad excesiva — el agua vaporiza dentro del film durante el curado' },
+      { name:'Espesor promedio', val:'92 µm', limit:'60–80 µm', status:'crit', dur:'—', detail:'Film grueso — los gases no pueden escapar antes de la gelificación' },
+      { name:'Temperatura secado Z2', val:'105°C', limit:'100–130°C', status:'ok', dur:'—', detail:'Dentro de rango pero al límite inferior' },
+    ],
+    ok: [
+      { name:'pH Fosfatado', val:'5.02', limit:'4.5–5.5' },
+      { name:'PMT Horno', val:'196°C', limit:'190–210°C' },
+    ],
+    sparklines: [
+      { label:'HR Horno interior (%)', val:'42%', unit:'%', limit:'Límite: 25%', color:'#ef4444',
+        points:'0,22 30,25 60,30 90,36 120,40 150,42 180,44 210,42 240,38 270,30 300,24' },
+      { label:'Espesor película (µm)', val:'92', unit:'µm', limit:'Máx: 80 µm', color:'#ef4444',
+        points:'0,46 30,50 60,54 90,56 120,58 150,58 180,56 210,54 240,52 270,50 300,48' },
+    ],
+    cause:'Los micro-poros (pinholes) son causados por gases atrapados que no pueden escapar del film antes de que este gelifica. La humedad alta en el horno (42% por 1h 22min) genera vapor de agua dentro del film fundido, y el exceso de espesor (92 µm) aumenta la viscosidad y previene que las burbujas escapen. Juntos crean las pequeñas cavidades características.',
+    actions:[
+      'Purgar el horno en cada inicio de turno — abrir purgas durante 15 min con cadena en movimiento sin carga',
+      'Reducir espesor de aplicación a 65–75 µm mediante calibración de pistolas y caudal',
+      'Instalar sensor de humedad permanente en interior del horno con alarma a 25%',
+      'Aumentar temperatura de secado a 125°C para eliminar humedad residual antes del horno de curado',
+      'Verificar que el polvo no haya absorbido humedad: hacer test de fluidez antes del primer lote',
+    ]
+  },
+  subcurado: {
+    vars: [
+      { name:'PMT Zona 2 (pico)', val:'184°C', limit:'190–210°C', status:'crit', dur:'1h 04min', detail:'PMT críticamente baja — reacciones de curado del poliéster incompletas' },
+      { name:'Tiempo a PMT ≥190°C', val:'0 min', limit:'≥ 10 min', status:'crit', dur:'—', detail:'No se alcanzó el tiempo mínimo de curado — film sin crosslinking suficiente' },
+      { name:'Velocidad cadena', val:'4.1 m/min', limit:'3.2–3.6 m/min', status:'warn', dur:'32 min', detail:'Velocidad excesiva — reduce el tiempo de permanencia en el horno' },
+    ],
+    ok: [
+      { name:'HR Cabina', val:'49%', limit:'≤ 60%' },
+      { name:'pH Fosfatado', val:'5.10', limit:'4.5–5.5' },
+    ],
+    sparklines: [
+      { label:'PMT Zona 2 (°C)', val:'184°C', unit:'°C', limit:'Mínimo: 190°C', color:'#ef4444',
+        points:'0,60 30,58 60,54 90,48 120,44 150,42 180,44 210,48 240,52 270,56 300,58' },
+      { label:'Velocidad cadena (m/min)', val:'4.1', unit:'m/min', limit:'Máx: 3.6 m/min', color:'#f59e0b',
+        points:'0,35 30,40 60,44 90,46 120,48 150,48 180,46 210,42 240,38 270,36 300,34' },
+    ],
+    cause:'La PMT nunca alcanzó el mínimo de 190°C requerido para iniciar el curado completo del polvo poliéster. La causa principal es la velocidad excesiva de la cadena (4.1 m/min por 32 min), que redujo el tiempo de permanencia en el horno. Combinado con la zona 2 posiblemente descompensada, las piezas salieron subcuradas: film blando, adhesión deficiente, y baja resistencia al solvente.',
+    actions:[
+      'Reducir velocidad de cadena a 3.4 m/min de inmediato y confirmar PMT ≥190°C por ≥10 min',
+      'Separar TODOS los lotes producidos durante el período de velocidad alta para prueba MEK Rub Test',
+      'Realizar prueba de dureza con lápiz (ASTM D3363) — subcurado = dureza < F',
+      'Revisar el control de velocidad del motor de cadena: posible falla en el variador de frecuencia',
+      'Verificar el set point del horno Zona 2 — aumentar 8–10°C temporalmente hasta resolver la velocidad',
+    ]
+  },
+  decoloracion: {
+    vars: [
+      { name:'Temperatura horno Z3 salida', val:'118°C', limit:'80–100°C', status:'warn', dur:'45 min', detail:'Sobreexposición térmica al final del horno — degradación del pigmento' },
+      { name:'PMT tiempo total', val:'21 min', limit:'10–18 min', status:'warn', dur:'—', detail:'Tiempo excesivo a alta temperatura — amarillamiento del polvo blanco/beige' },
+      { name:'Velocidad cadena', val:'2.9 m/min', limit:'3.2–3.6 m/min', status:'warn', dur:'38 min', detail:'Velocidad baja — exceso de tiempo en el horno' },
+    ],
+    ok: [
+      { name:'pH Fosfatado', val:'5.08', limit:'4.5–5.5' },
+      { name:'PMT Zona 2 (pico)', val:'202°C', limit:'190–210°C' },
+    ],
+    sparklines: [
+      { label:'T° Horno Zona 3 salida (°C)', val:'118°C', unit:'°C', limit:'Máx: 100°C', color:'#f59e0b',
+        points:'0,30 30,34 60,40 90,46 120,50 150,52 180,52 210,50 240,46 270,40 300,35' },
+      { label:'Velocidad cadena (m/min)', val:'2.9', unit:'m/min', limit:'Mín: 3.2 m/min', color:'#f59e0b',
+        points:'0,50 30,46 60,42 90,38 120,34 150,32 180,32 210,34 240,38 270,42 300,46' },
+    ],
+    cause:'La velocidad de cadena reducida (2.9 m/min) incrementó el tiempo total de exposición en el horno. Esto elevó la temperatura de la zona 3 de salida a 118°C y prolongó el tiempo a PMT alta a 21 min, superando el máximo de 18 min para polvos poliéster estándar. El sobrecocido causa degradación del pigmento, especialmente notoria en polvos blancos, beiges o amarillos.',
+    actions:[
+      'Ajustar velocidad de cadena a 3.4 m/min — reducir set point de Zona 3 a 85°C',
+      'Verificar el perfil de curado completo con datalogger de temperatura en pieza (KIC, Datapaq o similar)',
+      'Consultar con el proveedor del polvo el rango máximo de sobrecocido permitido para este lote',
+      'Revisar las piezas afectadas: si el cambio de color es uniforme, puede ser aceptable con aprobación del cliente',
+      'Ajustar el programa de temperatura del horno para mantener Zona 3 ≤ 100°C con la velocidad correcta',
+    ]
+  },
+  espesor: {
+    vars: [
+      { name:'Voltaje pistola', val:'88 kV', limit:'65–80 kV', status:'crit', dur:'1h 15min', detail:'Voltaje alto — efecto Faraday en bordes, espesor irregular' },
+      { name:'Espesor promedio medido', val:'102 µm', limit:'60–80 µm', status:'crit', dur:'—', detail:'Espesor 27% sobre especificación' },
+      { name:'Presión aire pistola', val:'24 PSI', limit:'15–22 PSI', status:'warn', dur:'48 min', detail:'Alta presión — más caudal de polvo por ciclo' },
+    ],
+    ok: [
+      { name:'PMT Horno', val:'198°C', limit:'190–210°C' },
+      { name:'HR Cabina', val:'50%', limit:'≤ 60%' },
+    ],
+    sparklines: [
+      { label:'Voltaje pistola (kV)', val:'88', unit:'kV', limit:'Máx: 80 kV', color:'#ef4444',
+        points:'0,38 30,42 60,46 90,50 120,52 150,54 180,52 210,48 240,44 270,40 300,38' },
+      { label:'Presión aire (PSI)', val:'24', unit:'PSI', limit:'Máx: 22 PSI', color:'#f59e0b',
+        points:'0,34 30,38 60,44 90,48 120,50 150,50 180,48 210,44 240,40 270,36 300,34' },
+    ],
+    cause:'El voltaje de la pistola estuvo por encima del límite (88 kV vs 80 kV máximo) durante más de una hora. El exceso de carga electrostática aumenta el depósito de polvo, en especial en aristas y bordes, generando un espesor promedio de 102 µm — 27% sobre la especificación. La presión alta de aire (24 PSI) amplificó el caudal de polvo y contribuyó al sobreespesor.',
+    actions:[
+      'Reducir voltaje a 72 kV (set point nominal) y verificar el generador de alta tensión',
+      'Reducir presión de aire a 18 PSI y re-ajustar el punto de entrega de polvo',
+      'Medir espesor de las piezas afectadas: si > 100 µm en zonas visibles, reprocesar',
+      'Verificar que el generador de alta tensión no tenga deriva — calibración con multímetro de alta tensión',
+      'Documentar los ajustes en la hoja de parámetros de cabina para el operador del turno siguiente',
+    ]
+  }
+};
+
+let invSelectedFault = null;
+let invStep = 1;
+
+function openInv(){
+  invSelectedFault = null;
+  invStep = 1;
+  document.getElementById('invOverlay').classList.add('open');
+  document.getElementById('customFault').value='';
+  renderInvStep(1);
+}
+function closeInv(){
+  document.getElementById('invOverlay').classList.remove('open');
+}
+function renderInvStep(n){
+  invStep=n;
+  ['invStep1','invStep2','invStep3'].forEach((id,i)=>{
+    document.getElementById(id).style.display=(i+1===n)?'block':'none';
+  });
+  document.querySelectorAll('.inv-step').forEach((el,i)=>{
+    el.classList.remove('active','done');
+    if(i+1===n) el.classList.add('active');
+    else if(i+1<n) el.classList.add('done');
+  });
+}
+function selectFault(id){
+  invSelectedFault=id;
+  document.querySelectorAll('.fault-card').forEach(c=>{
+    c.classList.toggle('selected', c.dataset.fault===id);
+  });
+  document.getElementById('customFault').value='';
+}
+function invGoStep2(){
+  const custom=document.getElementById('customFault').value.trim();
+  if(!invSelectedFault && !custom){
+    document.getElementById('invError1').style.display='block'; return;
+  }
+  document.getElementById('invError1').style.display='none';
+  if(!invSelectedFault && custom) invSelectedFault='custom';
+  // Pre-fill date/lot
+  const now=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  document.getElementById('invDate').value=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  document.getElementById('invTimeStart').value='09:40';
+  document.getElementById('invTimeEnd').value='11:30';
+  document.getElementById('invLot').value='L-2024-0891';
+  renderInvStep(2);
+}
+function invGoStep3(){
+  const lot=document.getElementById('invLot').value.trim()||'L-2024-0891';
+  const date=document.getElementById('invDate').value||'2026-04-24';
+  const t1=document.getElementById('invTimeStart').value||'09:40';
+  const t2=document.getElementById('invTimeEnd').value||'11:30';
+  renderInvStep(3);
+  buildAnalysis(lot,date,t1,t2);
+}
+
+function buildAnalysis(lot,date,t1,t2){
+  const faultId = invSelectedFault==='custom' ? 'adherencia' : invSelectedFault;
+  const data = FAULT_DATA[faultId] || FAULT_DATA.adherencia;
+  const fault = FAULTS.find(f=>f.id===faultId) || FAULTS[0];
+  const custom = document.getElementById('customFault').value.trim();
+  const faultName = custom || fault.name;
+  const invNum = 'INV-' + String(Math.floor(Math.random()*900)+100);
+  const dateDisplay = date.split('-').reverse().join('/');
+
+  // Header
+  document.getElementById('invResultHdr').innerHTML=`
+    <div class="inv-num">${invNum} · Generado ${new Date().toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})}</div>
+    <div class="inv-result-title">${fault.icon} ${faultName}</div>
+    <div class="inv-result-meta">
+      <span class="tag tag-blue" style="margin-right:6px">Lote ${lot}</span>
+      <span class="tag tag-purple" style="margin-right:6px">📅 ${dateDisplay} · ${t1}–${t2}</span>
+      <span class="tag tag-yellow">⚠ ${data.vars.filter(v=>v.status!=='ok').length} variable${data.vars.filter(v=>v.status!=='ok').length!==1?'s':''} fuera de rango</span>
+    </div>`;
+
+  // Variables out of range
+  const outHtml = data.vars.map(v=>{
+    const cls = v.status==='crit'?'var-out-crit':v.status==='warn'?'var-out-warn':'var-out-ok';
+    const icon = v.status==='crit'?'🔴':v.status==='warn'?'🟡':'🟢';
+    const valColor = v.status==='crit'?'color:var(--red)':v.status==='warn'?'color:var(--yellow)':'color:var(--green)';
+    const durHtml = v.dur&&v.dur!=='—'?`<div class="vo-duration ${v.status==='warn'?'warn-dur':''}">⏱ ${v.dur} fuera de rango</div>`:'';
+    return `<div class="var-out-item ${cls}">
+      <div class="vo-icon">${icon}</div>
+      <div>
+        <div class="vo-name">${v.name}</div>
+        <div class="vo-detail">${v.detail}</div>
+        ${durHtml}
+      </div>
+      <div class="vo-right">
+        <div class="vo-val" style="${valColor}">${v.val}</div>
+        <div class="vo-limit">Límite: ${v.limit}</div>
+      </div>
+    </div>`;
+  }).join('');
+  const okHtml = data.ok.map(v=>`<div class="var-out-item var-out-ok">
+    <div class="vo-icon">🟢</div>
+    <div><div class="vo-name">${v.name}</div><div class="vo-detail">Dentro de especificación durante todo el período</div></div>
+    <div class="vo-right"><div class="vo-val" style="color:var(--green)">${v.val}</div><div class="vo-limit">Rango: ${v.limit}</div></div>
+  </div>`).join('');
+  document.getElementById('invVarsOut').innerHTML=outHtml;
+  document.getElementById('invVarsOk').innerHTML=okHtml;
+
+  // Sparklines
+  const spHtml = data.sparklines.map(sp=>{
+    const isOutRange = sp.color!=='#22c55e';
+    const limitY = 12;
+    return `<div class="sparkline-card">
+      <div class="sp-label">${sp.label}</div>
+      <div class="sp-val-row"><span class="sp-val" style="color:${sp.color}">${sp.val}</span><span class="sp-unit">${sp.unit}</span></div>
+      <svg viewBox="0 0 300 70" style="width:100%;height:56px">
+        <line x1="0" y1="${limitY}" x2="300" y2="${limitY}" stroke="${sp.color}" stroke-width="1" stroke-dasharray="3,3" opacity=".6"/>
+        <polyline points="${sp.points}" stroke="${sp.color}" stroke-width="1.8" fill="none"/>
+        <polyline points="0,70 ${sp.points} 300,70" fill="${sp.color}" opacity=".08"/>
+      </svg>
+      <div class="sp-limit-line" style="color:${sp.color};font-size:10px">${sp.limit}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('invSparklines').innerHTML=spHtml;
+
+  // Cause
+  document.getElementById('invCause').textContent=data.cause;
+
+  // Actions
+  const actHtml = data.actions.map((a,i)=>`<li class="action-item"><div class="action-num">${i+1}</div><span>${a}</span></li>`).join('');
+  document.getElementById('invActions').innerHTML=actHtml;
+
+  // Store for PDF
+  document.getElementById('invExportBtn').onclick=()=>generateInvReport(invNum,faultName,lot,dateDisplay);
+}
+
+function generateInvReport(num,fault,lot,date){
+  alert(`📄 Generando Reporte 8D...\n\n${num} · ${fault}\nLote: ${lot} · ${date}\n\nEl reporte incluye:\n• D1: Equipo de investigación\n• D2: Descripción del problema\n• D3: Contención inmediata\n• D4: Causa raíz identificada\n• D5: Acciones correctivas\n• D6: Implementación y verificación\n• D7: Prevención (AMEF actualizado)\n• D8: Reconocimiento del equipo\n\n✓ PDF generado · Listo para calidad`);
+}
+</script>
+
+<!-- ══════════════════════════════════
+   INVESTIGATION MODAL
+══════════════════════════════════ -->
+<div class="inv-overlay" id="invOverlay" onclick="if(event.target===this)closeInv()">
+  <div class="inv-modal">
+
+    <!-- Header -->
+    <div class="inv-hdr">
+      <div class="inv-hdr-top">
+        <span class="inv-badge">🔍 Investigación de Falla</span>
+        <button class="inv-close" onclick="closeInv()">✕</button>
+      </div>
+      <div class="inv-steps">
+        <div class="inv-step active" id="invStepTab1">1. Tipo de falla</div>
+        <div class="inv-step-sep">›</div>
+        <div class="inv-step" id="invStepTab2">2. Datos del incidente</div>
+        <div class="inv-step-sep">›</div>
+        <div class="inv-step" id="invStepTab3">3. Análisis de variables</div>
+      </div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="inv-body" id="invStep1">
+      <h3>¿Qué tipo de falla se encontró?</h3>
+      <p class="inv-sub">Selecciona la más parecida. Puedes ingresar una descripción libre si no está en la lista.</p>
+      <div class="fault-grid" id="faultGrid"></div>
+      <div class="fault-custom">
+        <label>O describe la falla manualmente</label>
+        <input type="text" id="customFault" class="inv-input" placeholder="Ej: Decoloración en bordes, puntos blancos..." oninput="if(this.value.trim()){document.querySelectorAll('.fault-card').forEach(c=>c.classList.remove('selected'));invSelectedFault=null;}">
+      </div>
+      <div id="invError1" style="display:none;font-size:12px;color:var(--red);margin-top:10px">Selecciona una falla o escribe una descripción para continuar.</div>
+      <div class="inv-row-btns" style="margin-top:18px">
+        <button class="inv-btn" onclick="invGoStep2()">Continuar →</button>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="inv-body" id="invStep2" style="display:none">
+      <h3>¿Cuándo ocurrió el incidente?</h3>
+      <p class="inv-sub">Con estos datos el sistema buscará las variables que estuvieron fuera de rango durante ese período.</p>
+      <div class="inv-fields">
+        <div class="inv-field">
+          <label>Número de lote</label>
+          <input type="text" id="invLot" class="inv-input" placeholder="L-2024-0891">
+        </div>
+        <div class="inv-field">
+          <label>Fecha</label>
+          <input type="date" id="invDate" class="inv-input">
+        </div>
+        <div class="inv-field">
+          <label>Hora inicio</label>
+          <input type="time" id="invTimeStart" class="inv-input">
+        </div>
+        <div class="inv-field">
+          <label>Hora fin (aprox.)</label>
+          <input type="time" id="invTimeEnd" class="inv-input">
+        </div>
+        <div class="inv-field inv-field-full">
+          <label>Observaciones adicionales (opcional)</label>
+          <textarea id="invNotes" class="inv-textarea" placeholder="Ej: Solo afecta la parte inferior de las piezas, primer lote del turno..."></textarea>
+        </div>
+      </div>
+      <div class="inv-row-btns">
+        <button class="inv-btn-sec" onclick="renderInvStep(1)">← Regresar</button>
+        <button class="inv-btn" onclick="invGoStep3()">🔍 Analizar variables →</button>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="inv-body" id="invStep3" style="display:none">
+      <!-- Result header -->
+      <div class="inv-result-hdr" id="invResultHdr"></div>
+
+      <!-- Variables out of range -->
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Variables fuera de rango durante el período</div>
+      <div class="var-out-grid" id="invVarsOut"></div>
+
+      <!-- Variables in range -->
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;margin-top:4px">Variables dentro de especificación</div>
+      <div class="var-out-grid" id="invVarsOk" style="margin-bottom:18px"></div>
+
+      <!-- Sparklines -->
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Historial de variables críticas — período seleccionado</div>
+      <div class="sparkline-grid" id="invSparklines" style="margin-bottom:18px"></div>
+
+      <!-- Cause -->
+      <div class="cause-card">
+        <div class="cause-title">🧠 Causa raíz más probable</div>
+        <div class="cause-body" id="invCause"></div>
+      </div>
+
+      <!-- Corrective actions -->
+      <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Acciones correctivas sugeridas</div>
+      <ul class="actions-list" id="invActions"></ul>
+
+      <div class="inv-row-btns">
+        <button class="inv-btn-sec" onclick="renderInvStep(2)">← Modificar datos</button>
+        <button class="inv-btn inv-btn-green" id="invExportBtn">📄 Generar Reporte 8D</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Build fault grid on load
+(function(){
+  const grid=document.getElementById('faultGrid');
+  if(!grid) return;
+  grid.innerHTML=FAULTS.map(f=>`
+    <div class="fault-card" data-fault="${f.id}" onclick="selectFault('${f.id}')">
+      <div class="fc-icon">${f.icon}</div>
+      <div class="fc-name">${f.name}</div>
+      <div class="fc-en">${f.en}</div>
+    </div>`).join('');
+  // Wire up step tabs display
+  document.querySelectorAll('.inv-step').forEach((el,i)=>{el.id='invStepTab'+(i+1)});
+})();
 </script>
 </body>
 </html>
