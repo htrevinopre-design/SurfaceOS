@@ -232,6 +232,78 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
 .pred-icon{font-size:16px;flex-shrink:0;margin-top:1px}
 .pred-title{font-size:12px;font-weight:600;margin-bottom:2px}
 .pred-desc{font-size:11px;color:var(--muted2);line-height:1.5}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media(max-width:768px){
+  /* Topbar */
+  .topbar{padding:0 12px;gap:8px;flex-wrap:nowrap;height:48px}
+  .line-tabs{display:none}
+  .role-tabs{margin-left:auto;gap:2px}
+  .role-tab{padding:3px 8px;font-size:10px}
+  .topbar-right .clock{display:none}
+  .logo{font-size:14px}
+
+  /* Layout: sidebar moves to bottom */
+  .shell{height:100dvh}
+  .main{flex-direction:column-reverse}
+  .sidebar{
+    width:100%;height:54px;
+    border-right:none;border-top:1px solid var(--border);
+    display:flex;flex-direction:row;
+    padding:0;overflow-x:auto;overflow-y:hidden;
+    flex-shrink:0;
+  }
+  .nav-section{display:none}
+  .nav-item{
+    border-left:none;border-top:2px solid transparent;
+    flex-direction:column;gap:2px;
+    padding:6px 14px;font-size:9px;
+    text-align:center;flex-shrink:0;
+    white-space:nowrap;min-width:64px;
+    justify-content:center;align-items:center;
+  }
+  .nav-item.active{background:rgba(59,130,246,.1);border-left-color:transparent;border-top-color:var(--accent)}
+  .nav-icon{font-size:18px;width:auto}
+  .nav-badge{position:absolute;top:4px;right:8px;font-size:9px;padding:0 4px}
+
+  /* Content */
+  .content{padding:14px 12px;overflow-y:auto}
+
+  /* Grids → 1 col */
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+
+  /* Page 1: health + KPIs row */
+  .kpi-row{grid-template-columns:1fr 1fr!important}
+  /* Inline style overrides for page 1 grids */
+  [style*="grid-template-columns:200px"]{grid-template-columns:1fr 1fr!important}
+
+  /* Alerts */
+  .alerts-layout{grid-template-columns:1fr}
+
+  /* AI */
+  .ai-layout{grid-template-columns:1fr}
+  .chat-window{height:380px}
+
+  /* Sensor grid */
+  .sensor-grid{grid-template-columns:repeat(3,1fr)}
+
+  /* Tables */
+  .tbl-scroll{overflow-x:auto}
+  .amef-table,.lot-table{min-width:680px}
+
+  /* Process flow already has overflow-x:auto */
+  .station{min-width:155px}
+}
+
+@media(max-width:480px){
+  .role-tabs{display:none}
+  .sensor-grid{grid-template-columns:repeat(2,1fr)}
+  .content{padding:12px 10px}
+  .topbar{height:44px}
+  .sidebar{height:52px}
+}
 </style>
 </head>
 <body>
@@ -285,7 +357,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
   </div>
 
   <!-- Row 1: Health + KPIs principales -->
-  <div style="display:grid;grid-template-columns:200px 1fr 1fr 1fr;gap:14px" class="mb">
+  <div style="display:grid;grid-template-columns:200px 1fr 1fr 1fr;gap:14px" class="mb kpi-row">
 
     <div class="card" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center">
       <div class="card-title" style="margin-bottom:8px">Salud del Proceso</div>
@@ -717,7 +789,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
       <div class="card-title" style="margin:0">Registro de Titulaciones — Turno Matutino</div>
       <span class="tag tag-blue">Último análisis: 10:30 AM · Op. Torres</span>
     </div>
-    <table class="lot-table">
+    <div class="tbl-scroll"><table class="lot-table">
       <thead><tr>
         <th>Hora</th><th>Baño</th><th>pH</th><th>Ác. Libre / Conc.</th><th>Ác. Total</th><th>Fe / Parámetro adicional</th><th>Conductividad</th><th>Acción</th>
       </tr></thead>
@@ -730,7 +802,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
         <tr><td>08:30</td><td>Sello 2 · Pasivado Zr</td><td>4.3</td><td>Zr: 142 ppm</td><td>—</td><td>—</td><td>920 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
         <tr><td>10:30</td><td>Enjuague 2</td><td>5.8</td><td>—</td><td>—</td><td>—</td><td>188 µS/cm</td><td><span class="tag tag-green">Sin novedad</span></td></tr>
       </tbody>
-    </table>
+    </table></div>
   </div>
 
   <!-- Sensor status grid — 27 sensores -->
@@ -912,7 +984,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
         <div class="card-title" style="margin:0">AMEF — Tabla de Riesgos del Proceso</div>
         <span style="font-size:10px;color:var(--muted)">NPR = S × O × D</span>
       </div>
-      <table class="amef-table">
+      <div class="tbl-scroll"><table class="amef-table">
         <thead><tr>
           <th>Modo de Falla</th><th>Efecto</th><th>S</th><th>O</th><th>D</th><th>NPR</th><th>Estado</th>
         </tr></thead>
@@ -960,7 +1032,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
             <td><span class="tag tag-yellow">Protocolo limpieza</span></div></td>
           </tr>
         </tbody>
-      </table>
+      </table></div>
       <div style="font-size:10px;color:var(--muted);margin-top:10px;line-height:1.7">
         S = Severidad · O = Ocurrencia · D = Detección (escala 1–10)<br>
         NPR ≥ 300: Acción inmediata &nbsp;·&nbsp; NPR 100–299: Plan de acción &nbsp;·&nbsp; NPR &lt; 100: Monitorear
@@ -970,7 +1042,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
     <!-- Catálogo de defectos -->
     <div class="card">
       <div class="card-title">Catálogo de Defectos — Nomenclatura Industria</div>
-      <table class="amef-table">
+      <div class="tbl-scroll"><table class="amef-table">
         <thead><tr><th>Defecto</th><th>Variable raíz</th><th>Norma ref.</th><th>Turno</th></tr></thead>
         <tbody>
           <tr>
@@ -1010,7 +1082,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
             <td><span class="tag tag-yellow">3</span></td>
           </tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
   </div>
 
@@ -1020,7 +1092,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
       <div class="card-title" style="margin:0">Trazabilidad de Lotes — Turno Matutino</div>
       <button class="audit-btn" onclick="generatePDF()">📄 Generar PDF de Auditoría ISO</button>
     </div>
-    <table class="lot-table">
+    <div class="tbl-scroll"><table class="lot-table">
       <thead><tr>
         <th>Lote</th><th>Hora inicio</th><th>Piezas</th><th>pH Fosf. (min/max)</th><th>PMT Pico</th><th>Inmersión</th><th>FPY lote</th><th>Inspector</th><th>Estado</th>
       </tr></thead>
@@ -1031,7 +1103,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-s
         <tr><td>L-2024-0892</td><td>11:25</td><td>149</td><td>5.18 / 5.32</td><td>198°C</td><td>5:20</td><td><strong style="color:var(--green)">99.3%</strong></td><td>Ing. Martínez</td><td><span class="tag tag-green">Aprobado</span></td></tr>
         <tr><td>L-2024-0893</td><td>En proceso</td><td>—</td><td>5.25 / 5.32</td><td>—</td><td>—</td><td>—</td><td>Ing. Martínez</td><td><span class="tag tag-blue">En proceso</span></td></tr>
       </tbody>
-    </table>
+    </table></div>
     <div style="font-size:11px;color:var(--muted);margin-top:10px">
       ⚠ Lote L-0891: PMT bajó a 189°C por apertura de puerta horno a las 10:02 AM. 3 piezas separadas para prueba MEK Rub + adhesión cruzada ASTM D3359.
     </div>
